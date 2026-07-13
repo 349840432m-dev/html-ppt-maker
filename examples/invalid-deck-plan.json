@@ -1,0 +1,14 @@
+{
+  "title": "缺字段示例",
+  "audience": "测试",
+  "scenario": "测试",
+  "goal": "触发校验失败",
+  "slides": [
+    {
+      "id": "s01",
+      "type": "cover",
+      "title": "",
+      "body": []
+    }
+  ]
+}

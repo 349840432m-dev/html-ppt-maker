@@ -1,0 +1,70 @@
+{
+  "title": "演示标题",
+  "audience": "目标受众",
+  "scenario": "使用场景",
+  "goal": "演示目标",
+  "style_confirmation": {
+    "status": "confirmed",
+    "selected_style": "已确认的视觉风格",
+    "selected_template": "style-library 模板 ID",
+    "secondary_template": null,
+    "output_mode": "阅读件或演示件",
+    "ppt_strategy": "HTML-matched 或 editable-fallback"
+  },
+  "design_read": "读作：使用场景面向目标受众，讲完希望完成核心行动，用明确的设计语言，选择已确认风格与输出模式。",
+  "visual_system": {
+    "style": "已确认的视觉风格",
+    "template_signatures": ["构图签名一", "构图签名二", "构图签名三"],
+    "DESIGN_VARIANCE": 5,
+    "MOTION_INTENSITY": 4,
+    "VISUAL_DENSITY": 6
+  },
+  "visual_style": "视觉方向摘要",
+  "slides": [
+    {
+      "id": "s01",
+      "type": "cover",
+      "layout_family": "hero",
+      "title": "封面标题",
+      "takeaway": "一句话主张",
+      "body": ["要点一", "要点二"],
+      "evidence": ["用户提供资料或需补来源"],
+      "visual": "主视觉或版式建议",
+      "layout_intent": "这一页采用该版式的叙事功能，如诊断、对比、转折、停顿、收束",
+      "first_visual_anchor": "第一视觉锚点：缩略图里最先被看到的对象",
+      "visual_translation": {
+        "object": "diagnostic-gate",
+        "metaphor": "抽象概念翻译成什么可见对象；无隐喻写不使用隐喻",
+        "components": ["可画对象 1", "可画对象 2", "可画对象 3"],
+        "layout": "构图方式，如 left-to-right flow / 2x2 matrix / split contrast"
+      },
+      "element_budget": {
+        "main_structure": ["diagnostic-gate"],
+        "supporting_elements": ["annotation", "arrow"],
+        "rhythm_element": ["oversized-type"],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "本页最容易变丑或变空的风险",
+      "pass_criteria": "通过标准：缩略图可读、视觉锚点明确、信息关系可见、与前后页轮廓不同",
+      "image_prompt": "如需生图，写完整提示词；不需要则写不需要",
+      "animation": "标题和背景依次淡入",
+      "transition": "fade",
+      "storyboard_states": [
+        {
+          "suffix": "a",
+          "label": "初始判断",
+          "include_steps": [0],
+          "speaker_note": "只显示本页的第一个判断或问题。"
+        },
+        {
+          "suffix": "b",
+          "label": "完整结论",
+          "include_steps": [0, 1, 2],
+          "speaker_note": "显示完整结构和结论。"
+        }
+      ],
+      "quality_bar": "本页应成为视觉记忆点，而不是普通标题页",
+      "speaker_notes": "讲述提示"
+    }
+  ]
+}

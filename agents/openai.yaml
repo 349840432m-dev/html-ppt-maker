@@ -1,0 +1,4 @@
+interface:
+  display_name: "HTML动态PPT生成器"
+  short_description: "先确认风格，再生成高审美HTML与匹配版PPTX。"
+  default_prompt: "使用 $html-ppt-maker 根据我的主题和资料先确认风格，再生成 HTML 动态演示稿与 HTML-matched PPTX。"

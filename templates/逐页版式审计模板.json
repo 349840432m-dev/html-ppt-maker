@@ -1,0 +1,29 @@
+{
+  "layout_intent": "这一页为什么采用该版式：用一句话说明它承担的叙事功能，如诊断、对比、转折、停顿、收束。",
+  "first_visual_anchor": "第一视觉锚点：观众缩略图里最先看到的对象，如大判断句、矩阵中心点、流程分叉、巨型数字。",
+  "visual_translation": {
+    "object": "matrix / decision-tree / flow / timeline / journey / funnel / before-after / diagnostic-gate / metaphor 等",
+    "metaphor": "如有隐喻，写清它把抽象概念翻译成什么可见对象；无隐喻写不使用隐喻。",
+    "components": [
+      "组成部件 1：必须是可画的对象，不写抽象词",
+      "组成部件 2",
+      "组成部件 3"
+    ],
+    "layout": "构图方式：left-to-right flow / 2x2 matrix / center quote / split contrast / radial map 等"
+  },
+  "element_budget": {
+    "main_structure": ["matrix"],
+    "supporting_elements": ["annotation / arrow / label / legend / source-line / side-note / numbering / axis / connector，最多 3 个"],
+    "rhythm_element": ["big-number / quote / contrast-band / dark-break / crop-image / code-snippet / texture / oversized-type，至少 1 个"],
+    "decorative_elements": ["最多 1 个；必须说明信息作用，没有作用就不放"]
+  },
+  "design_contract": {
+    "hierarchy": "标题/结论、正文、注释/来源如何形成三级层级；写比例或具体字号，不写‘层级清楚’。",
+    "whitespace_intent": "本页最大空白区在哪里，它承担聚焦、分组、停顿还是图像安全区；无大留白时说明密度理由。",
+    "alignment_contract": "标题、正文、图片/图表、来源行采用哪条共同对齐线或网格。",
+    "color_emphasis": "唯一主强调色标什么；若使用第二语义色，说明它对应的对照/警示/状态。",
+    "single_claim": "本页唯一要让观众记住的结论；数据页的所有数字必须共同证明它。"
+  },
+  "aesthetic_risk": "本页最容易变丑或变空的风险，如线稿占位、文字过淡、卡片重复、留白无意义。",
+  "pass_criteria": "通过标准：缩略图可读、视觉锚点明确、信息关系可见、与前后页轮廓不同。"
+}

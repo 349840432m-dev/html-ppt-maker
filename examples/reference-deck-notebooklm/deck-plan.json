@@ -1,0 +1,725 @@
+{
+  "title": "确定感，比金额更值钱：付费问卷激励设计公开课",
+  "audience": "产研与增长同学，做过问卷投放但没系统设计过激励",
+  "scenario": "45 分钟线上公开课",
+  "goal": "让听众回去把问卷激励从「有机会获得」改成「确定拿到」，并把规则前置、兑现自动化",
+  "style_confirmation": {
+    "status": "confirmed",
+    "selected_style": "NotebookLM 信息图风",
+    "selected_template": "notebooklm-infographic",
+    "secondary_template": null,
+    "output_mode": "演示件",
+    "ppt_strategy": "HTML-matched"
+  },
+  "design_read": "读作：公开课面向产研与增长同学，讲完希望他们改掉抽奖式激励，用直接、有数据感的语言，选 NotebookLM 信息图风 + 演示件",
+  "visual_system": {
+    "style": "NotebookLM 信息图风",
+    "template_signatures": ["上下黑色压边条", "图表占画布主体", "每页一个朱红重点"],
+    "preset": "notebooklm",
+    "DESIGN_VARIANCE": 4,
+    "MOTION_INTENSITY": 5,
+    "VISUAL_DENSITY": 7,
+    "palette": "纯白底 + 黑 + 藏蓝 + 朱红（红色每页只标一个关键信息）",
+    "note": "全部数字为教学示例数据，页脚与状态条已标注"
+  },
+  "slides": [
+    {
+      "id": "s01",
+      "type": "cover",
+      "layout_family": "hero",
+      "title": "确定感，比金额更值钱",
+      "takeaway": "决定完成率的不是奖励大小，而是兑现的确定感。",
+      "body": [
+        "付费问卷激励设计公开课",
+        "把「有机会」改成「确定拿到」"
+      ],
+      "evidence": [
+        "全部数字为教学示例数据，非真实业务数据"
+      ],
+      "visual": "巨黑标题 + 红色增长曲线 + 三栏信息脚",
+      "animation": "标题与副标题淡入，曲线描边生长，信息脚逐栏出现",
+      "transition": "fade",
+      "speaker_notes": "开场先立论：今天只讲一个判断——确定感比金额更值钱。",
+      "render_track": "hand",
+      "data": {
+        "foot": [
+          {
+            "k": "核心主张",
+            "v": "决定完成率的不是奖励大小，而是兑现的确定感。"
+          },
+          {
+            "k": "课程信息",
+            "v": "产品研究公开课 / 45 分钟 / 面向产研与增长同学。"
+          },
+          {
+            "k": "数据说明",
+            "v": "全部数字为教学示例，非真实业务数据。"
+          }
+        ]
+      },
+      "layout_intent": "用 hero 版式把「决定完成率的不是奖励大小，而是兑现的确定感。」转成可扫描的视觉判断。",
+      "first_visual_anchor": "确定感，比金额更值钱 的主标题和 large-title with supporting proof footers。",
+      "visual_translation": {
+        "object": "diagnostic-gate",
+        "metaphor": "不使用额外隐喻，直接把论点转为可见的信息结构。",
+        "components": [
+          "核心主张",
+          "课程信息",
+          "数据说明"
+        ],
+        "layout": "large-title with supporting proof footers"
+      },
+      "element_budget": {
+        "main_structure": [
+          "diagnostic-gate"
+        ],
+        "supporting_elements": [
+          "annotation",
+          "source-line"
+        ],
+        "rhythm_element": [
+          "oversized-type"
+        ],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
+      "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
+    },
+    {
+      "id": "s02",
+      "type": "data",
+      "layout_family": "bars",
+      "title": "同样的预算，完成率差出一倍",
+      "takeaway": "单份成本相近时，确定发放的完成率接近抽奖的两倍。",
+      "body": [
+        "确定发放 15 元：61%",
+        "抽奖最高 100 元：34%",
+        "积分兑换：27%",
+        "无激励：19%"
+      ],
+      "evidence": [
+        "教学示例口径：同一份 6 分钟问卷，四组各投放 500 人"
+      ],
+      "visual": "横向条形图，确定发放条用红色标出",
+      "animation": "条形按步骤依次生长，标注最后出现",
+      "transition": "fade",
+      "speaker_notes": "强调对比口径一致：同一问卷、相近单份成本。",
+      "render_track": "engine",
+      "data": {
+        "items": [
+          {
+            "label": "确定发放 15 元",
+            "value": "61%",
+            "width_pct": 92,
+            "emphasis": "hot"
+          },
+          {
+            "label": "抽奖最高 100 元",
+            "value": "34%",
+            "width_pct": 52
+          },
+          {
+            "label": "积分兑换",
+            "value": "27%",
+            "width_pct": 41,
+            "emphasis": "minor"
+          },
+          {
+            "label": "无激励",
+            "value": "19%",
+            "width_pct": 29,
+            "emphasis": "minor"
+          }
+        ],
+        "note": "单份成本相近，确定发放的完成率接近抽奖的两倍",
+        "status_band": "示例口径：同一份 6 分钟问卷，四组各投放 500 人（教学示例数据）",
+        "footer": "付费问卷激励设计公开课 · 教学示例数据",
+        "tab": "盘点页"
+      },
+      "layout_intent": "用 bars 版式把「单份成本相近时，确定发放的完成率接近抽奖的两倍。」转成可扫描的视觉判断。",
+      "first_visual_anchor": "同样的预算，完成率差出一倍 的主标题和 ranked horizontal comparison chart。",
+      "visual_translation": {
+        "object": "bars",
+        "metaphor": "不使用额外隐喻，直接把论点转为可见的信息结构。",
+        "components": [
+          "确定发放 15 元",
+          "抽奖最高 100 元",
+          "积分兑换",
+          "无激励"
+        ],
+        "layout": "ranked horizontal comparison chart"
+      },
+      "element_budget": {
+        "main_structure": [
+          "bars"
+        ],
+        "supporting_elements": [
+          "annotation",
+          "source-line"
+        ],
+        "rhythm_element": [
+          "big-number"
+        ],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
+      "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
+    },
+    {
+      "id": "s03",
+      "type": "framework",
+      "layout_family": "decision-tree",
+      "title": "决策树：什么时候值得付费答卷",
+      "takeaway": "先判断任务价值，再决定激励方式，避免把现金当成唯一解。",
+      "body": [
+        "问卷能否换来高价值决策",
+        "用户需要投入明显时间",
+        "答案可直接影响产品动作",
+        "满意度打分不用现金"
+      ],
+      "evidence": [
+        "定性判断框架，无需数据来源"
+      ],
+      "visual": "条件节点分层展开，结论节点黑底收束",
+      "animation": "起点、条件层、结论按三步展开，侧轨线随第二步生长",
+      "transition": "fade",
+      "speaker_notes": "PPT 导出时按三个状态拆页。",
+      "render_track": "engine",
+      "data": {
+        "start": "这个问卷是否能换来高价值决策？",
+        "branches": [
+          {
+            "text": "用户需要投入明显时间"
+          },
+          {
+            "text": "答案可直接影响产品动作"
+          },
+          {
+            "text": "样本需要特定人群"
+          },
+          {
+            "text": "只是满意度打分：不用现金",
+            "stop": true
+          }
+        ],
+        "result": "进入付费答卷设计：金额 + 确定感 + 兑现机制",
+        "tab": "判断页"
+      },
+      "layout_intent": "用 decision-tree 版式把「先判断任务价值，再决定激励方式，避免把现金当成唯一解。」转成可扫描的视觉判断。",
+      "first_visual_anchor": "决策树：什么时候值得付费答卷 的主标题和 top-down decision path。",
+      "visual_translation": {
+        "object": "decision-tree",
+        "metaphor": "不使用额外隐喻，直接把论点转为可见的信息结构。",
+        "components": [
+          "问卷能否换来高价值决策",
+          "用户需要投入明显时间",
+          "答案可直接影响产品动作",
+          "满意度打分不用现金"
+        ],
+        "layout": "top-down decision path"
+      },
+      "element_budget": {
+        "main_structure": [
+          "decision-tree"
+        ],
+        "supporting_elements": [
+          "annotation",
+          "source-line"
+        ],
+        "rhythm_element": [
+          "contrast-band"
+        ],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
+      "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
+    },
+    {
+      "id": "s04",
+      "type": "data",
+      "layout_family": "funnel",
+      "title": "漏斗诊断：奖励不是只影响完成率",
+      "takeaway": "最大流失点不是钱少，是兑现规则不清楚。",
+      "body": [
+        "看到问卷 100%",
+        "理解奖励 78%",
+        "相信能拿到 42%",
+        "完成答卷 34%"
+      ],
+      "evidence": [
+        "教学示例数据，瓶颈层用红色标出"
+      ],
+      "visual": "四层漏斗，「相信能拿到」层红色高亮，右侧标注流失原因",
+      "animation": "漏斗层逐层出现，标注最后出现",
+      "transition": "fade",
+      "speaker_notes": "让听众注意 78% 到 42% 的断崖：信任问题，不是金额问题。",
+      "render_track": "engine",
+      "data": {
+        "layers": [
+          {
+            "label": "看到问卷",
+            "value": "100%",
+            "width_px": 620
+          },
+          {
+            "label": "理解奖励",
+            "value": "78%",
+            "width_px": 520
+          },
+          {
+            "label": "相信能拿到",
+            "value": "42%",
+            "width_px": 330,
+            "hot": true
+          },
+          {
+            "label": "完成答卷",
+            "value": "34%",
+            "width_px": 260
+          }
+        ],
+        "note": {
+          "headline": "最大流失点：不是钱少，是兑现规则不清楚",
+          "detail": "标注层必须写具体原因，不能只写\"优化转化\"。"
+        },
+        "footer": "付费问卷激励设计公开课 · 教学示例数据",
+        "tab": "诊断页"
+      },
+      "layout_intent": "用 funnel 版式把「最大流失点不是钱少，是兑现规则不清楚。」转成可扫描的视觉判断。",
+      "first_visual_anchor": "漏斗诊断：奖励不是只影响完成率 的主标题和 top-to-bottom narrowing funnel。",
+      "visual_translation": {
+        "object": "funnel",
+        "metaphor": "不使用额外隐喻，直接把论点转为可见的信息结构。",
+        "components": [
+          "看到问卷 100%",
+          "理解奖励 78%",
+          "相信能拿到 42%",
+          "完成答卷 34%"
+        ],
+        "layout": "top-to-bottom narrowing funnel"
+      },
+      "element_budget": {
+        "main_structure": [
+          "funnel"
+        ],
+        "supporting_elements": [
+          "annotation",
+          "source-line"
+        ],
+        "rhythm_element": [
+          "big-number"
+        ],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
+      "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
+    },
+    {
+      "id": "s05",
+      "type": "framework",
+      "layout_family": "causal-chain",
+      "title": "因果链：把激励从成本变成信任信号",
+      "takeaway": "公开课里要讲机制，而不只是列做法。",
+      "body": [
+        "动作：提前说明奖励规则",
+        "感知：用户获得确定感",
+        "行为：更愿意投入认真答案",
+        "结果：付费成为契约"
+      ],
+      "evidence": [
+        "机制推演，定性框架"
+      ],
+      "visual": "四张卡片链式推进，结果卡黑底反白",
+      "animation": "卡片按因果顺序逐张出现",
+      "transition": "fade",
+      "speaker_notes": "结尾落在「契约」这个词上，为后面的改造对照做铺垫。",
+      "render_track": "engine",
+      "data": {
+        "cards": [
+          {
+            "kicker": "动作",
+            "title": "提前说明奖励规则",
+            "detail": "金额、门槛、发放时间都放在开头。"
+          },
+          {
+            "kicker": "感知",
+            "title": "用户获得确定感",
+            "detail": "不需要猜测是否被套路。"
+          },
+          {
+            "kicker": "行为",
+            "title": "更愿意投入认真答案",
+            "detail": "完成率和回答质量同时提升。"
+          },
+          {
+            "kicker": "结果",
+            "title": "付费不只是激励，而是契约",
+            "detail": "产品获得更可信的用户反馈。",
+            "result": true
+          }
+        ],
+        "tab": "机制页"
+      },
+      "layout_intent": "用 causal-chain 版式把「公开课里要讲机制，而不只是列做法。」转成可扫描的视觉判断。",
+      "first_visual_anchor": "因果链：把激励从成本变成信任信号 的主标题和 left-to-right cause and effect chain。",
+      "visual_translation": {
+        "object": "causal-chain",
+        "metaphor": "不使用额外隐喻，直接把论点转为可见的信息结构。",
+        "components": [
+          "动作：提前说明奖励规则",
+          "感知：用户获得确定感",
+          "行为：更愿意投入认真答案",
+          "结果：付费成为契约"
+        ],
+        "layout": "left-to-right cause and effect chain"
+      },
+      "element_budget": {
+        "main_structure": [
+          "causal-chain"
+        ],
+        "supporting_elements": [
+          "annotation",
+          "source-line"
+        ],
+        "rhythm_element": [
+          "contrast-band"
+        ],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
+      "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
+    },
+    {
+      "id": "s06",
+      "type": "framework",
+      "layout_family": "matrix",
+      "title": "矩阵判断：不是所有问卷都该付费",
+      "takeaway": "横轴看用户投入，纵轴看决策价值，右上角才值得认真设计付费答卷。",
+      "body": [
+        "满意度打分：低投入低价值",
+        "长问卷泛样本：高投入低价值",
+        "NPS 追问：低投入高价值",
+        "目标用户深访问卷：优先投入区"
+      ],
+      "evidence": [
+        "定性定位，不涉及数据"
+      ],
+      "visual": "二维矩阵，右上象限红框标为优先投入区",
+      "animation": "坐标系先出现，目标象限高亮，点位分两步落位",
+      "transition": "fade",
+      "speaker_notes": "提醒：左下角的问卷加钱也没用，先砍掉。",
+      "render_track": "engine",
+      "data": {
+        "x_axis": "用户投入高 →",
+        "y_axis": "决策价值高 ↑",
+        "target_label": "优先投入区",
+        "points": [
+          {
+            "label": "满意度打分",
+            "x_pct": 22,
+            "y_pct": 28
+          },
+          {
+            "label": "长问卷泛样本",
+            "x_pct": 72,
+            "y_pct": 26
+          },
+          {
+            "label": "NPS 追问",
+            "x_pct": 28,
+            "y_pct": 78
+          },
+          {
+            "label": "目标用户深访问卷",
+            "x_pct": 76,
+            "y_pct": 76,
+            "hot": true
+          }
+        ],
+        "tab": "优先级页"
+      },
+      "layout_intent": "用 matrix 版式把「横轴看用户投入，纵轴看决策价值，右上角才值得认真设计付费答卷。」转成可扫描的视觉判断。",
+      "first_visual_anchor": "矩阵判断：不是所有问卷都该付费 的主标题和 2x2 matrix with one emphasized quadrant。",
+      "visual_translation": {
+        "object": "matrix",
+        "metaphor": "不使用额外隐喻，直接把论点转为可见的信息结构。",
+        "components": [
+          "满意度打分：低投入低价值",
+          "长问卷泛样本：高投入低价值",
+          "NPS 追问：低投入高价值",
+          "目标用户深访问卷：优先投入区"
+        ],
+        "layout": "2x2 matrix with one emphasized quadrant"
+      },
+      "element_budget": {
+        "main_structure": [
+          "matrix"
+        ],
+        "supporting_elements": [
+          "annotation",
+          "source-line"
+        ],
+        "rhythm_element": [
+          "contrast-band"
+        ],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
+      "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
+    },
+    {
+      "id": "s07",
+      "type": "process",
+      "layout_family": "journey",
+      "title": "用户路径蓝图：奖励在哪一步起作用",
+      "takeaway": "上层是用户动作，下层是产品机制；风险点标在动作层，机制必须逐格对应。",
+      "body": [
+        "五个阶段：看到问卷、判断值不值、答题中、领取奖励、复访推荐",
+        "两个红点风险位：预期不清、兑现不畅"
+      ],
+      "evidence": [
+        "流程拆解，定性框架"
+      ],
+      "visual": "双泳道表格，阶段黑头行，红点标风险位",
+      "animation": "阶段头、动作行、机制行、风险点按四步出现",
+      "transition": "fade",
+      "speaker_notes": "让听众对照自己产品：这五格里哪一格是空的。",
+      "render_track": "engine",
+      "data": {
+        "stages": [
+          "看到问卷",
+          "判断值不值",
+          "答题中",
+          "领取奖励",
+          "复访推荐"
+        ],
+        "actions": [
+          "扫码或点开入口",
+          {
+            "text": "估算耗时和回报",
+            "risk": true
+          },
+          "持续投入注意力",
+          {
+            "text": "按规则兑现",
+            "risk": true
+          },
+          "决定是否再参与"
+        ],
+        "mechanisms": [
+          "入口写明奖励和耗时",
+          "首屏给出金额与门槛",
+          "进度条 + 剩余题量",
+          "自动到账，无需申请",
+          "发放记录可查询"
+        ],
+        "note": "● 两个红点是流失高发位：预期不清、兑现不畅",
+        "tab": "路径页"
+      },
+      "layout_intent": "用 journey 版式把「上层是用户动作，下层是产品机制；风险点标在动作层，机制必须逐格对应。」转成可扫描的视觉判断。",
+      "first_visual_anchor": "用户路径蓝图：奖励在哪一步起作用 的主标题和 swimlane journey blueprint。",
+      "visual_translation": {
+        "object": "journey",
+        "metaphor": "不使用额外隐喻，直接把论点转为可见的信息结构。",
+        "components": [
+          "五个阶段：看到问卷、判断值不值、答题中、领取奖励、复访推荐",
+          "两个红点风险位：预期不清、兑现不畅",
+          "行动指令"
+        ],
+        "layout": "swimlane journey blueprint"
+      },
+      "element_budget": {
+        "main_structure": [
+          "journey"
+        ],
+        "supporting_elements": [
+          "annotation",
+          "source-line"
+        ],
+        "rhythm_element": [
+          "contrast-band"
+        ],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
+      "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
+    },
+    {
+      "id": "s08",
+      "type": "comparison",
+      "layout_family": "before-after",
+      "title": "改造对照：同一份问卷开头的两种写法",
+      "takeaway": "两边条目必须一一对应；after 要指出改造原则，不能只是更好看。",
+      "body": [
+        "有机会获得 → 完成即得 15 元",
+        "规则藏结尾 → 规则前置首屏",
+        "手动申请 → 自动到账"
+      ],
+      "evidence": [
+        "改造示例来自本课虚构案例"
+      ],
+      "visual": "左红底问题面板 + 右白底改造面板，底部黑条写改造原则",
+      "animation": "before、after、原则条按三步出现",
+      "transition": "fade",
+      "speaker_notes": "PPT 导出时拆 before / after / 原则三页。",
+      "render_track": "engine",
+      "data": {
+        "before": {
+          "head": "改造前",
+          "items": [
+            "\"完成问卷**有机会**获得奖励\"，金额和概率都不说。",
+            "奖励规则藏在结尾，答完才知道要**抽奖**。",
+            "兑现要**手动申请**，三个工作日后发放。"
+          ]
+        },
+        "after": {
+          "head": "改造后",
+          "items": [
+            "开头写明\"**完成即得 15 元**，约 6 分钟\"。",
+            "规则前置：金额、门槛、发放时间放在首屏。",
+            "**自动到账**，完成页直接显示发放状态。"
+          ]
+        },
+        "principle": "改造原则：把\"有机会\"换成\"确定感\"，把申请换成自动",
+        "tab": "对照页"
+      },
+      "layout_intent": "用 before-after 版式把「两边条目必须一一对应；after 要指出改造原则，不能只是更好看。」转成可扫描的视觉判断。",
+      "first_visual_anchor": "改造对照：同一份问卷开头的两种写法 的主标题和 split contrast before and after。",
+      "visual_translation": {
+        "object": "before-after",
+        "metaphor": "不使用额外隐喻，直接把论点转为可见的信息结构。",
+        "components": [
+          "有机会获得 → 完成即得 15 元",
+          "规则藏结尾 → 规则前置首屏",
+          "手动申请 → 自动到账"
+        ],
+        "layout": "split contrast before and after"
+      },
+      "element_budget": {
+        "main_structure": [
+          "before-after"
+        ],
+        "supporting_elements": [
+          "annotation",
+          "source-line"
+        ],
+        "rhythm_element": [
+          "contrast-band"
+        ],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
+      "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
+    },
+    {
+      "id": "s09",
+      "type": "summary",
+      "layout_family": "checklist",
+      "title": "下一份问卷，先做这三件事",
+      "takeaway": "规则进第一屏、抽奖换确定、申请换自动。",
+      "body": [
+        "把奖励写进第一屏",
+        "把抽奖换成确定发放",
+        "把申请换成自动到账"
+      ],
+      "evidence": [
+        "行动清单，由前面各页推出"
+      ],
+      "visual": "三行黑框清单，红蓝勾选块",
+      "animation": "三行逐条出现",
+      "transition": "fade",
+      "speaker_notes": "让听众拍照这一页。",
+      "render_track": "engine",
+      "data": {
+        "items": [
+          {
+            "strong": "把奖励写进第一屏：",
+            "text": "金额、耗时、发放时间，一个都不许藏到结尾。"
+          },
+          {
+            "strong": "把抽奖换成确定发放：",
+            "text": "预算不变时，宁可金额小，也要**确定拿到**。"
+          },
+          {
+            "strong": "把申请换成自动到账：",
+            "text": "完成页直接显示发放状态，兑现记录可查询。"
+          }
+        ],
+        "tab": "行动页"
+      },
+      "layout_intent": "用 checklist 版式把「规则进第一屏、抽奖换确定、申请换自动。」转成可扫描的视觉判断。",
+      "first_visual_anchor": "下一份问卷，先做这三件事 的主标题和 prioritized checklist。",
+      "visual_translation": {
+        "object": "process",
+        "metaphor": "不使用额外隐喻，直接把论点转为可见的信息结构。",
+        "components": [
+          "把奖励写进第一屏",
+          "把抽奖换成确定发放",
+          "把申请换成自动到账"
+        ],
+        "layout": "prioritized checklist"
+      },
+      "element_budget": {
+        "main_structure": [
+          "process"
+        ],
+        "supporting_elements": [
+          "annotation",
+          "source-line"
+        ],
+        "rhythm_element": [
+          "contrast-band"
+        ],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
+      "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
+    },
+    {
+      "id": "s10",
+      "type": "closing",
+      "layout_family": "end",
+      "title": "把「有机会」，改成「确定拿到」。",
+      "takeaway": "回去只改一件事",
+      "body": [
+        "一句话收束整场课"
+      ],
+      "evidence": [
+        "无"
+      ],
+      "visual": "巨黑结论 + 红色底线",
+      "animation": "引导句先出现，结论与底线随后",
+      "transition": "fade",
+      "speaker_notes": "收束回应核心行动，不说谢谢观看。",
+      "render_track": "hand",
+      "layout_intent": "用 end 版式把「回去只改一件事」转成可扫描的视觉判断。",
+      "first_visual_anchor": "把「有机会」，改成「确定拿到」。 的主标题和 closing action block。",
+      "visual_translation": {
+        "object": "diagnostic-gate",
+        "metaphor": "不使用额外隐喻，直接把论点转为可见的信息结构。",
+        "components": [
+          "回去只改一件事",
+          "None",
+          "把「有机会」，改成「确定拿到」。"
+        ],
+        "layout": "closing action block"
+      },
+      "element_budget": {
+        "main_structure": [
+          "diagnostic-gate"
+        ],
+        "supporting_elements": [
+          "annotation",
+          "source-line"
+        ],
+        "rhythm_element": [
+          "oversized-type"
+        ],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
+      "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
+    }
+  ],
+  "footer": "付费问卷激励设计公开课"
+}

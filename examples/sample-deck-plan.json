@@ -1,0 +1,119 @@
+{
+  "title": "AI 内容工作流升级方案",
+  "audience": "内容团队负责人和运营同事",
+  "scenario": "内部方案汇报",
+  "goal": "说明为什么要用 AI 重构选题、写作、配图和发布复盘流程",
+  "style_confirmation": {
+    "status": "confirmed",
+    "selected_style": "克制科技商务风",
+    "selected_template": "swiss-editorial",
+    "secondary_template": null,
+    "output_mode": "阅读件",
+    "ppt_strategy": "HTML-matched"
+  },
+  "design_read": "读作：内部方案汇报面向内容团队负责人和运营同事，讲完希望确认工作流升级方向，用克制、可追踪的语言，选科技商务风 + 阅读件。",
+  "visual_system": {
+    "style": "克制科技商务风",
+    "template_signatures": ["严格网格", "发丝分割线", "单一强调色"],
+    "DESIGN_VARIANCE": 5,
+    "MOTION_INTENSITY": 4,
+    "VISUAL_DENSITY": 7
+  },
+  "visual_style": "克制的科技商务风，浅色背景，绿色强调色，数据页保持高可读性",
+  "slides": [
+    {
+      "id": "s01",
+      "type": "cover",
+      "layout_family": "hero",
+      "title": "AI 内容工作流升级方案",
+      "takeaway": "用 AI 把内容生产从单点提效升级为可追踪的流水线。",
+      "body": [
+        "现有流程依赖个人经验",
+        "选题、写作、配图、复盘之间缺少闭环"
+      ],
+      "evidence": [
+        "示例占位：需补充团队当前产能数据"
+      ],
+      "visual": "封面主视觉，抽象工作流节点汇聚到发布结果",
+      "image_prompt": "16:9 横版，现代内容工作台，多个信息流汇聚为一张发布看板，浅色背景，绿色强调，左侧留出标题空间，不要文字、水印或 Logo",
+      "animation": "标题先淡入，两个问题点分步出现",
+      "transition": "fade",
+      "speaker_notes": "先说明这不是单个写作工具，而是生产链路升级。",
+      "layout_intent": "用 hero 版式把「用 AI 把内容生产从单点提效升级为可追踪的流水线。」转成可扫描的视觉判断。",
+      "first_visual_anchor": "AI 内容工作流升级方案 的主标题和 large-title with supporting proof footers。",
+      "visual_translation": {
+        "object": "diagnostic-gate",
+        "metaphor": "不使用额外隐喻，直接把论点转为可见的信息结构。",
+        "components": [
+          "现有流程依赖个人经验",
+          "选题、写作、配图、复盘之间缺少闭环"
+        ],
+        "layout": "large-title with supporting proof footers"
+      },
+      "element_budget": {
+        "main_structure": [
+          "diagnostic-gate"
+        ],
+        "supporting_elements": [
+          "annotation",
+          "source-line"
+        ],
+        "rhythm_element": [
+          "oversized-type"
+        ],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
+      "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
+    },
+    {
+      "id": "s02",
+      "type": "process",
+      "layout_family": "process-map",
+      "title": "新流程把四个环节接成闭环",
+      "takeaway": "选题、写作、配图、复盘需要共享同一套上下文。",
+      "body": [
+        "选题：记录来源和判断",
+        "写作：保留结构和引用",
+        "配图：统一视觉系统",
+        "复盘：把表现反馈给下一轮"
+      ],
+      "evidence": [
+        "推断：基于内容团队常见流程拆解"
+      ],
+      "visual": "四段式流程图，箭头形成闭环",
+      "image_prompt": "不需要生图，使用流程图和图标更清晰",
+      "animation": "四个流程节点依次出现，最后出现闭环箭头",
+      "transition": "push",
+      "speaker_notes": "强调上下文复用，而不是每一步重新开始。",
+      "layout_intent": "用 process-map 版式把「选题、写作、配图、复盘需要共享同一套上下文。」转成可扫描的视觉判断。",
+      "first_visual_anchor": "新流程把四个环节接成闭环 的主标题和 process-map composition。",
+      "visual_translation": {
+        "object": "process",
+        "metaphor": "不使用额外隐喻，直接把论点转为可见的信息结构。",
+        "components": [
+          "选题：记录来源和判断",
+          "写作：保留结构和引用",
+          "配图：统一视觉系统",
+          "复盘：把表现反馈给下一轮"
+        ],
+        "layout": "process-map composition"
+      },
+      "element_budget": {
+        "main_structure": [
+          "process"
+        ],
+        "supporting_elements": [
+          "annotation",
+          "source-line"
+        ],
+        "rhythm_element": [
+          "contrast-band"
+        ],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
+      "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
+    }
+  ]
+}

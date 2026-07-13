@@ -1,0 +1,15 @@
+{
+  "selected_concept": "高级信息图型",
+  "assets": [
+    {
+      "asset_id": "cover-visual",
+      "slides": ["s01"],
+      "role": "cover",
+      "status": "prompt_ready",
+      "prompt": "16:9 主视觉提示词或可编辑图形实现说明",
+      "safe_area": "left title area, bottom metadata area",
+      "fallback": "use layered editorial layout with abstract value-flow geometry",
+      "risk": "no text, no logo, no identifiable person"
+    }
+  ]
+}

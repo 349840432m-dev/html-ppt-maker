@@ -1,0 +1,79 @@
+{
+  "selected_concept": "高级信息图型",
+  "assets": [
+    {
+      "asset_id": "cover-visual",
+      "slides": [
+        "s01"
+      ],
+      "role": "cover",
+      "status": "editable_graphic",
+      "prompt": "深色高级公开课封面，价值交换路径、用户时间、企业洞察三层可编辑图形，左侧标题安全区",
+      "safe_area": "left 45% for title, bottom 12% for metadata",
+      "fallback": "use layered editorial layout with value-flow geometry",
+      "risk": "no logo, no real person, no baked text"
+    },
+    {
+      "asset_id": "section-visual-01",
+      "slides": [
+        "s04"
+      ],
+      "role": "section",
+      "status": "prompt_ready",
+      "prompt": "抽象章节视觉，问卷任务路径进入一个清晰交易框架，16:9，深色背景，金色和绿色线条",
+      "safe_area": "center-left title area must stay clean",
+      "fallback": "editable section-impact layout with large typography and geometry",
+      "risk": "avoid generic technology background"
+    },
+    {
+      "asset_id": "section-visual-02",
+      "slides": [
+        "s18",
+        "s26"
+      ],
+      "role": "section",
+      "status": "prompt_ready",
+      "prompt": "抽象运营飞轮与质量控制章节视觉，深色商务背景，节点围绕中心价值旋转，金色和祖母绿线条，16:9",
+      "safe_area": "left title block and bottom progress line remain clear",
+      "fallback": "editable flywheel and risk-control geometry",
+      "risk": "avoid fake dashboards or unreadable tiny text"
+    },
+    {
+      "asset_id": "concept-framework-01",
+      "slides": [
+        "s05",
+        "s32"
+      ],
+      "role": "concept",
+      "status": "editable_graphic",
+      "prompt": "三方账本和五项体检的可编辑框架图，使用三角、环形或矩阵结构",
+      "safe_area": "top title and bottom footer remain free",
+      "fallback": "native editable framework diagram",
+      "risk": "do not use fake data or statistics"
+    },
+    {
+      "asset_id": "case-error-remake-flow",
+      "slides": [
+        "s02"
+      ],
+      "role": "case",
+      "status": "editable_graphic",
+      "prompt": "用可编辑流程图展示错误流程与改造后流程的并排对照，红色只标一个主要断点。",
+      "safe_area": "右上标题区和底部页脚保留，不放入图形主体。",
+      "fallback": "若不单独生成资产，直接用 HTML before-after / process-map 组件绘制。",
+      "risk": "不得伪造真实客户截图或真实业务数据；标注为教学示例。"
+    },
+    {
+      "asset_id": "case-checklist-application",
+      "slides": [
+        "s02"
+      ],
+      "role": "case",
+      "status": "editable_graphic",
+      "prompt": "用可编辑检查表展示用户把方法套入业务的练习状态，保留空白填写区。",
+      "safe_area": "左侧标题和右下行动提示避让。",
+      "fallback": "用 HTML checklist 行和高亮框完成，不使用图片。",
+      "risk": "避免把示例写成真实公司案例；所有内容标注教学示例。"
+    }
+  ]
+}

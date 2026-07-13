@@ -1,0 +1,139 @@
+{
+  "title": "付费问卷公开课",
+  "audience": "企业运营人员",
+  "scenario": "公开课",
+  "goal": "帮助产品设计用户付费答卷",
+  "style_confirmation": {
+    "status": "confirmed",
+    "selected_style": "NotebookLM 信息图风",
+    "selected_template": "notebooklm-infographic",
+    "secondary_template": null,
+    "output_mode": "演示件",
+    "ppt_strategy": "HTML-matched storyboard"
+  },
+  "visual_style": "NotebookLM 信息图风",
+  "design_read": "面向企业运营人员的公开课，采用 NotebookLM 信息图语言，偏高密度结构图和克制分步揭示。",
+  "visual_system": {
+    "DESIGN_VARIANCE": 6,
+    "MOTION_INTENSITY": 5,
+    "VISUAL_DENSITY": 6,
+    "style": "NotebookLM 信息图风"
+    ,"template_signatures": ["上下黑色压边条", "图表占画布主体", "每页一个朱红重点"]
+  },
+  "slides": [
+    {
+      "id": "s01",
+      "type": "cover",
+      "layout_family": "hero",
+      "title": "如何设计付费问卷调查",
+      "takeaway": "现金不是唯一激励，确定感同样重要。",
+      "body": [
+        "付费条件",
+        "奖励机制"
+      ],
+      "evidence": [
+        "示例计划"
+      ],
+      "visual": "增长曲线封面",
+      "layout_intent": "用封面建立课程主张和视觉记忆点。",
+      "first_visual_anchor": "如何设计付费问卷调查",
+      "visual_translation": {
+        "object": "diagnostic-gate",
+        "metaphor": "用一条从判断门走向确定奖励的路径表达课程主张。",
+        "components": ["判断入口", "确定奖励终点"],
+        "layout": "large title with one directional path"
+      },
+      "element_budget": {
+        "main_structure": ["diagnostic-gate"],
+        "supporting_elements": ["annotation"],
+        "rhythm_element": ["oversized-type"],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "封面退成通用课程标题页。",
+      "pass_criteria": "主张清晰，路径可见，缩略图中标题可读。",
+      "image_prompt": "NotebookLM 信息图封面：白底、黑色粗标题、藏蓝基线、红色上扬曲线、底部三栏信息脚，不含文字图片",
+      "animation": "Reveal + Stagger",
+      "transition": "fade",
+      "quality_bar": "封面必须有强判断",
+      "speaker_notes": "开场说明课程目标。"
+    },
+    {
+      "id": "s02",
+      "type": "decision-tree",
+      "layout_family": "decision-tree",
+      "title": "什么时候值得付费答卷",
+      "takeaway": "先判断任务价值，再决定激励方式。",
+      "body": [
+        "是否高价值决策",
+        "是否需要特定样本",
+        "是否需要明显时间投入"
+      ],
+      "evidence": [
+        "示例计划"
+      ],
+      "visual": "决策树",
+      "layout_intent": "用条件分叉把付费判断转成可执行决策。",
+      "first_visual_anchor": "决策树起点问题",
+      "visual_translation": {
+        "object": "decision-tree",
+        "metaphor": "把抽象判断翻译成从起点到结论的条件路径。",
+        "components": ["起点问题", "价值条件", "样本条件", "最终动作"],
+        "layout": "left-to-right decision path"
+      },
+      "element_budget": {
+        "main_structure": ["decision-tree"],
+        "supporting_elements": ["connector", "label"],
+        "rhythm_element": ["contrast-band"],
+        "decorative_elements": []
+      },
+      "aesthetic_risk": "分叉只是文字列表，没有方向和收束。",
+      "pass_criteria": "起点、条件与最终动作一眼可追踪。",
+      "image_prompt": "不需要生图",
+      "animation": "Reveal + Line drawing + Stagger",
+      "transition": "fade",
+      "quality_bar": "终点必须是可执行动作",
+      "speaker_notes": "引导观众先判断，不要直接给钱。",
+      "storyboard_states": [
+        {
+          "suffix": "a",
+          "label": "显示起点问题",
+          "include_steps": [
+            0
+          ],
+          "speaker_note": "先抛出判断问题。"
+        },
+        {
+          "suffix": "b",
+          "label": "显示判断条件",
+          "include_steps": [
+            0,
+            1,
+            2
+          ],
+          "speaker_note": "展开关键条件。"
+        },
+        {
+          "suffix": "c",
+          "label": "显示最终动作",
+          "include_steps": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "speaker_note": "落到产品动作。"
+        }
+      ],
+      "render_track": "engine",
+      "data": {
+        "start": "这份问卷是否值得付费？",
+        "branches": [
+          {"text": "会影响高价值决策"},
+          {"text": "需要特定样本"},
+          {"text": "答题投入明显"}
+        ],
+        "result": "满足两项以上：设计确定性奖励"
+      }
+    }
+  ]
+}

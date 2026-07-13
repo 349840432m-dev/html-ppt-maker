@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>确定感，比金额更值钱 · 付费问卷激励设计公开课</title>
+  <style>
+    /* ==========================================================
+       风格预设：NotebookLM 信息图风
+       纯白底 + 黑/藏蓝/朱红三色 + 超粗黑体标题 + 蓝图线框卡片。
+       每页围绕一个大图表组织（堆叠层、条形图、瀑布图、甘特表、清单）。
+       与 index.html 共用同一套 JS 与 data-reveal/data-step 机制。
+       ========================================================== */
+    :root {
+      --bg: #ffffff;
+      --bg-soft: #f2f3f4;
+      --ink: #141414;
+      --ink-2: #3c3f43;
+      --ink-3: #85898e;
+      --navy: #33506b;
+      --red: #d8402c;
+      --gray-bar: #b9bdc2;
+	      --border: 2px solid var(--ink);
+	      --font-body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+	      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+	      --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+	      --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+	    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: #e6e7e9;
+      font-family: var(--font-body);
+      color: var(--ink);
+      overflow: hidden;
+    }
+    .stage {
+      position: absolute;
+      left: 50%; top: 50%;
+      width: 1280px; height: 720px;
+      transform: translate(-50%, -50%) scale(1);
+      transform-origin: center;
+      background: var(--bg);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .18);
+      overflow: hidden;
+    }
+    /* 页面上下黑色压边条：NotebookLM 版式的签名元素 */
+    .stage::before, .stage::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0;
+      height: 10px;
+      background: var(--ink);
+      z-index: 10;
+    }
+    .stage::before { top: 0; }
+    .stage::after { bottom: 0; }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 52px 64px 40px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(24px);
+	      transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
+      background: var(--bg);
+    }
+    .slide.active { opacity: 1; pointer-events: auto; transform: translateX(0); }
+
+    /* ---------- 通用文字：超粗黑体标题，中英混排 ---------- */
+    h1, h2 { margin: 0; font-weight: 900; letter-spacing: 0; line-height: 1.18; }
+    h1 { font-size: 64px; max-width: 1080px; }
+    h2 { font-size: 40px; max-width: 1040px; }
+    .takeaway {
+      max-width: 900px;
+      color: var(--ink-2);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.5;
+      margin: 12px 0 0;
+    }
+    .meta {
+      color: var(--ink-3);
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-self: end;
+    }
+    .num { font-variant-numeric: tabular-nums; }
+
+    [data-reveal], [data-step] {
+      opacity: 0;
+      transform: translateY(12px);
+	      transition: opacity 380ms var(--ease-out), transform 380ms var(--ease-out);
+    }
+    [data-reveal] { transition-delay: calc(var(--i, 0) * 90ms); }
+    .active [data-reveal].revealed,
+    .active [data-step].revealed { opacity: 1; transform: translateY(0); }
+
+    .draw {
+      fill: none;
+      stroke-dasharray: var(--len, 400);
+      stroke-dashoffset: var(--len, 400);
+      opacity: 1; transform: none;
+	      transition: stroke-dashoffset 900ms var(--ease-out);
+    }
+    .active .draw.revealed { stroke-dashoffset: 0; }
+
+    /* ---------- 生图资产嵌入（混合渲染，见 07 参考文档） ----------
+       白底生成图叠在浅色页上：multiply 融合 + 提白滤镜消除近白灰底。
+       用法：<img class="gen-asset" src="assets/gen/xx.png" style="width:210px; left:620px; top:316px;">
+       可挂 data-reveal / data-step；深色页不可用 multiply。 */
+    .gen-asset {
+      position: absolute;
+      mix-blend-mode: multiply;
+      filter: brightness(1.06) contrast(1.12);
+      pointer-events: none;
+    }
+
+    /* ========== 版式 1 / hero 封面：巨黑标题 + 红色增长曲线 + 三栏信息脚 ========== */
+    .layout-hero { grid-template-rows: auto 1fr auto; }
+    .layout-hero h1 { font-size: 72px; }
+    .layout-hero .subtitle { font-size: 42px; font-weight: 800; margin: 10px 0 0; }
+    .layout-hero .curve { align-self: center; justify-self: stretch; }
+    .hero-foot {
+      border-top: 1px solid var(--ink);
+      padding-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+    .hero-foot .k { font-size: 15px; font-weight: 800; margin: 0 0 8px; }
+    .hero-foot .v { font-size: 15px; color: var(--ink-2); line-height: 1.6; margin: 0; }
+
+    /* ========== 版式 3 / bars 条形图页：横向条 + 红色标注 + 黑色状态条 ========== */
+    .layout-bars .chart { align-self: center; width: 1000px; justify-self: center; display: grid; gap: 24px; }
+    .bar-row {
+      display: grid;
+      grid-template-columns: 150px 1fr 90px;
+      align-items: center;
+      gap: 16px;
+    }
+    .bar-row .label { font-size: 17px; font-weight: 700; text-align: right; }
+    .bar-row .track { position: relative; height: 46px; background: transparent; }
+    .bar-row .bar {
+      position: absolute; left: 0; top: 0; bottom: 0;
+	      width: var(--w);
+	      background: var(--navy);
+	      transform: scaleX(0);
+	      transform-origin: left center;
+	      transition: transform 800ms var(--ease-out);
+	    }
+    .bar-row.minor .bar { background: var(--gray-bar); }
+    .bar-row.hot .bar { background: var(--red); }
+	    .bar-row.revealed .bar { transform: scaleX(1); }
+    .bar-row .value { font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .bar-note { font-size: 16px; color: var(--red); font-weight: 700; padding-left: 166px; }
+    .status-band {
+      justify-self: stretch;
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 800;
+      padding: 14px 20px;
+    }
+
+    /* ========== 高级组件 / decision-tree 决策树：条件判断 -> 结论动作 ========== */
+    .layout-decision-tree .tree-wrap {
+      align-self: center;
+      display: grid;
+      grid-template-columns: 260px 1fr 260px;
+      align-items: center;
+      gap: 34px;
+    }
+    .tree-node {
+      border: var(--border);
+      background: var(--bg);
+      padding: 18px 20px;
+      min-height: 86px;
+      display: grid;
+      align-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .tree-node.start { background: var(--ink); color: #fff; }
+    .tree-node.result { background: var(--navy); color: #fff; }
+    .tree-node.stop { background: var(--red); color: #fff; }
+    .tree-mid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 34px; }
+    .tree-rail {
+      position: absolute;
+      left: 360px;
+      right: 330px;
+      top: 342px;
+      height: 280px;
+      pointer-events: none;
+    }
+    .tree-rail::before,
+    .tree-rail::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      border-top: 3px solid var(--navy);
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 700ms var(--ease-out);
+    }
+    .tree-rail::after {
+      border-top-color: var(--red);
+      top: calc(50% + 72px);
+    }
+    .tree-rail.revealed::before,
+    .tree-rail.revealed::after { transform: scaleX(1); }
+
+    /* ========== 高级组件 / funnel 漏斗诊断：层级流失 + 瓶颈标注 ========== */
+    .layout-funnel .funnel-wrap {
+      align-self: center;
+      justify-self: center;
+      width: 1020px;
+      display: grid;
+      grid-template-columns: 680px 1fr;
+      gap: 42px;
+      align-items: center;
+    }
+    .funnel { display: grid; gap: 12px; justify-items: center; }
+    .funnel-layer {
+      height: 58px;
+      width: var(--w);
+      background: var(--navy);
+      color: #fff;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: 0 22px;
+      font-size: 18px;
+      font-weight: 900;
+      transform: scaleX(.96);
+      transform-origin: center;
+    }
+    .funnel-layer.hot { background: var(--red); }
+    .funnel-layer span:last-child { font-variant-numeric: tabular-nums; }
+    .funnel-note {
+      border: var(--border);
+      padding: 24px;
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.45;
+      color: var(--red);
+    }
+    .funnel-note small {
+      display: block;
+      color: var(--ink-2);
+      font-size: 15px;
+      font-weight: 700;
+      margin-top: 14px;
+    }
+
+    /* ========== 高级组件 / causal-chain 因果链：动作 -> 感知 -> 行为 -> 结果 ========== */
+    .layout-causal-chain .chain {
+      align-self: center;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+    .chain-card {
+      position: relative;
+      border: var(--border);
+      min-height: 220px;
+      padding: 24px 20px;
+      display: grid;
+      align-content: start;
+      gap: 14px;
+    }
+    .chain-card::after {
+      content: "→";
+      position: absolute;
+      right: -24px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--red);
+    }
+    .chain-card:last-child::after { content: ""; }
+    .chain-card.result { background: var(--ink); color: #fff; }
+    .chain-card .k { font-size: 15px; color: var(--red); font-weight: 900; }
+    .chain-card .t { font-size: 24px; font-weight: 900; line-height: 1.25; }
+    .chain-card .m { font-size: 16px; line-height: 1.55; color: var(--ink-2); }
+    .chain-card.result .m { color: #d7d9dc; }
+
+    /* ========== 高级组件 / matrix 矩阵判断：坐标轴 + 目标象限 ========== */
+    .layout-matrix .matrix-wrap {
+      align-self: center;
+      justify-self: center;
+      position: relative;
+      width: 920px;
+      height: 430px;
+      border-left: 4px solid var(--ink);
+      border-bottom: 4px solid var(--ink);
+      background:
+        linear-gradient(90deg, transparent calc(50% - 1px), #cfd2d6 calc(50% - 1px), #cfd2d6 calc(50% + 1px), transparent calc(50% + 1px)),
+        linear-gradient(0deg, transparent calc(50% - 1px), #cfd2d6 calc(50% - 1px), #cfd2d6 calc(50% + 1px), transparent calc(50% + 1px));
+    }
+    .matrix-target {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 50%;
+      height: 50%;
+      background: color-mix(in srgb, var(--red), transparent 88%);
+      border: 3px solid var(--red);
+    }
+    .matrix-axis {
+      position: absolute;
+      font-size: 16px;
+      font-weight: 900;
+    }
+    .matrix-axis.x { right: 0; bottom: -34px; }
+    .matrix-axis.y { left: -8px; top: -34px; }
+    .matrix-point {
+      position: absolute;
+      left: var(--x);
+      bottom: var(--y);
+      transform: translate(-50%, 50%);
+      border: var(--border);
+      background: var(--bg);
+      padding: 10px 14px;
+      font-size: 15px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    /* 点位自身依赖 transform 居中，必须覆盖 data-step 揭示动画的 transform */
+    .matrix-point[data-step] { transform: translate(-50%, calc(50% + 12px)); }
+    .active .matrix-point[data-step].revealed { transform: translate(-50%, 50%); }
+    .matrix-point.hot { background: var(--red); color: #fff; border-color: var(--red); }
+    .matrix-label {
+      position: absolute;
+      right: 22px;
+      top: 20px;
+      color: var(--red);
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    /* ========== 高级组件 / journey 用户路径蓝图：阶段泳道 + 用户动作/产品机制 + 风险点 ========== */
+    .layout-journey .journey-wrap {
+      align-self: center;
+      display: grid;
+      grid-template-columns: 118px repeat(5, minmax(0, 1fr));
+      border: var(--border);
+      width: 100%;
+    }
+    .j-cell {
+      border: 1px solid #cfd2d6;
+      padding: 16px 16px;
+      font-size: 16px;
+      line-height: 1.5;
+      min-height: 132px;
+      display: grid;
+      align-content: center;
+      position: relative;
+    }
+    .j-head {
+      background: var(--ink);
+      color: #fff;
+      font-weight: 900;
+      font-size: 17px;
+      min-height: 64px;
+      text-align: center;
+    }
+    .j-lane {
+      background: var(--navy);
+      color: #fff;
+      font-weight: 900;
+      font-size: 15px;
+      text-align: center;
+    }
+    .j-cell .risk {
+      position: absolute;
+      right: 10px;
+      top: 8px;
+      width: 14px; height: 14px;
+      background: var(--red);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px var(--bg);
+    }
+    .journey-note {
+      align-self: end;
+      justify-self: start;
+      color: var(--red);
+      font-size: 17px;
+      font-weight: 900;
+      margin-top: 14px;
+    }
+
+    /* ========== 高级组件 / before-after 前后对照：问题面板 vs 改造面板 ========== */
+    .layout-before-after .ba {
+      align-self: center;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 26px;
+    }
+    .ba-panel { border: var(--border); }
+    .ba-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      font-size: 21px;
+      font-weight: 900;
+      border-bottom: var(--border);
+    }
+    .ba-head .mark {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 16px;
+    }
+    .ba-panel.before .mark { background: var(--red); }
+    .ba-panel.after .mark { background: var(--navy); }
+    .ba-panel.before { background: color-mix(in srgb, var(--red), transparent 95%); }
+    .ba-item {
+      padding: 15px 20px;
+      font-size: 16px;
+      line-height: 1.55;
+      border-bottom: 1px solid #cfd2d6;
+      min-height: 76px;
+      /* 不用 display:grid/flex：会把内联 <em> 拆成独立条目 */
+      display: block;
+      align-content: center;
+    }
+    .ba-item:last-child { border-bottom: none; }
+    .ba-item em { font-style: normal; font-weight: 900; color: var(--red); }
+    .ba-panel.after .ba-item em { color: var(--navy); }
+    .ba-principle {
+      align-self: end;
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      font-weight: 900;
+      font-size: 18px;
+      padding: 14px;
+      margin-top: 20px;
+    }
+
+    /* ========== 版式 7 / checklist 清单：黑框行 + 红蓝勾选块 ========== */
+    .layout-checklist .list { align-self: center; justify-self: center; width: 1020px; display: grid; }
+    .check-row {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      border: var(--border);
+      border-bottom: none;
+    }
+    .check-row:last-child { border-bottom: var(--border); }
+    .check-row .tick {
+      margin: 14px;
+      border-radius: 10px;
+      background: var(--red);
+      display: grid;
+      place-content: center;
+      color: #fff;
+      font-size: 30px;
+      font-weight: 900;
+      min-height: 62px;
+    }
+    .check-row:nth-child(even) .tick { background: var(--navy); }
+    .check-row .txt { align-self: center; font-size: 21px; font-weight: 700; line-height: 1.5; padding: 18px 22px 18px 6px; }
+    .check-row .txt strong { font-weight: 900; }
+    .check-row .txt em { font-style: normal; color: var(--red); font-weight: 900; }
+
+    /* ========== 版式 9 / end 收束页：巨黑结论 + 红色底线 ========== */
+    .layout-end { grid-template-rows: 1fr auto; }
+    .layout-end .end-block { align-self: center; justify-self: center; text-align: center; max-width: 1080px; }
+    .layout-end .lead { font-size: 26px; font-weight: 800; margin: 0 0 26px; }
+    .layout-end h2 { font-size: 60px; display: inline-block; }
+    .layout-end .underline { height: 8px; background: var(--red); margin-top: 18px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide, [data-reveal], [data-step], .draw, .tree-rail::before, .tree-rail::after, .bar-row .bar, .wf .col .block, .wf .col .val {
+        transition: none !important;
+      }
+      [data-reveal], [data-step] { opacity: 1; transform: none; }
+      .draw { stroke-dashoffset: 0; }
+      .tree-rail::before, .tree-rail::after { transform: scaleX(1); }
+      .bar-row .bar { transform: scaleX(1); }
+      .wf .col .block { transform: scaleY(1); }
+      .wf .col .val { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-live="polite">
+
+    <!-- 版式 1：hero 封面 -->
+    <section class="slide layout-hero active" data-title="封面" data-slide-id="s01">
+      <header>
+        <h1 data-primary-anchor data-role="rhythm" data-reveal style="--i:0">确定感，比金额更值钱</h1>
+        <p class="subtitle" data-reveal style="--i:1">付费问卷激励设计公开课：把「有机会」改成「确定拿到」</p>
+      </header>
+      <svg class="curve" data-role="main-structure" width="1152" height="260" viewBox="0 0 1152 260" aria-hidden="true">
+        <path class="draw" data-reveal style="--len:420; --i:2" d="M 20 218 H 430" stroke="var(--navy)" stroke-width="9" stroke-linecap="round"/>
+        <circle data-reveal style="--i:3" cx="446" cy="218" r="12" fill="var(--red)"/>
+        <path class="draw" data-reveal style="--len:760; --i:3" d="M 462 218 C 700 214, 900 160, 1080 24" stroke="var(--red)" stroke-width="7" stroke-linecap="round"/>
+      </svg>
+      <div class="hero-foot" data-role="support">
+        <div data-reveal style="--i:4"><p class="k">核心主张</p><p class="v">决定完成率的不是奖励大小，而是兑现的确定感。</p></div>
+        <div data-reveal style="--i:5"><p class="k">课程信息</p><p class="v">产品研究公开课 / 45 分钟 / 面向产研与增长同学。</p></div>
+        <div data-reveal style="--i:6"><p class="k">数据说明</p><p class="v">全部数字为教学示例，非真实业务数据。</p></div>
+      </div>
+    </section>
+
+
+    <!-- 版式 2：bars 条形图 -->
+    <section class="slide layout-bars" data-title="盘点页" data-slide-id="s02">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm">同样的预算，完成率差出一倍</h2>
+      </header>
+      <div class="chart" data-role="main-structure">
+        <div class="bar-row hot" data-step="0" style="--w:92%">
+          <span class="label">确定发放 15 元</span>
+          <div class="track"><div class="bar"></div></div>
+          <span class="value num">61%</span>
+        </div>
+        <div class="bar-row" data-step="1" style="--w:52%">
+          <span class="label">抽奖最高 100 元</span>
+          <div class="track"><div class="bar"></div></div>
+          <span class="value num">34%</span>
+        </div>
+        <div class="bar-row minor" data-step="2" style="--w:41%">
+          <span class="label">积分兑换</span>
+          <div class="track"><div class="bar"></div></div>
+          <span class="value num">27%</span>
+        </div>
+        <div class="bar-row minor" data-step="2" style="--w:29%">
+          <span class="label">无激励</span>
+          <div class="track"><div class="bar"></div></div>
+          <span class="value num">19%</span>
+        </div>
+        <p class="bar-note" data-step="1">单份成本相近，确定发放的完成率接近抽奖的两倍</p>
+      </div>
+      <div class="status-band" data-step="3">示例口径：同一份 6 分钟问卷，四组各投放 500 人（教学示例数据）</div>
+      <footer class="meta" data-role="support"><span>付费问卷激励设计公开课 · 教学示例数据</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 高级组件：decision-tree 决策树 -->
+    <section class="slide layout-decision-tree" data-title="判断页" data-slide-id="s03">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm">决策树：什么时候值得付费答卷</h2>
+        <p class="takeaway">先判断任务价值，再决定激励方式，避免把现金当成唯一解。</p>
+      </header>
+      <div class="tree-wrap" data-role="main-structure">
+        <div class="tree-node start" data-step="0">这个问卷是否能换来高价值决策？</div>
+        <div class="tree-mid">
+          <div class="tree-node" data-step="1">用户需要投入明显时间</div>
+          <div class="tree-node" data-step="1">答案可直接影响产品动作</div>
+          <div class="tree-node" data-step="2">样本需要特定人群</div>
+          <div class="tree-node stop" data-step="2">只是满意度打分：不用现金</div>
+        </div>
+        <div class="tree-node result" data-step="3">进入付费答卷设计：金额 + 确定感 + 兑现机制</div>
+      </div>
+      <div class="tree-rail" data-step="1" aria-hidden="true"></div>
+      <footer class="meta" data-role="support"><span>付费问卷激励设计公开课</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 高级组件：funnel 漏斗诊断 -->
+    <section class="slide layout-funnel" data-title="诊断页" data-slide-id="s04">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm">漏斗诊断：奖励不是只影响完成率</h2>
+        <p class="takeaway">用户会在每一层判断值不值得继续，瓶颈通常不是金额，而是不确定。</p>
+      </header>
+      <div class="funnel-wrap" data-role="main-structure">
+        <div class="funnel">
+          <div class="funnel-layer" data-step="0" style="--w:620px"><span>看到问卷</span><span>100%</span></div>
+          <div class="funnel-layer" data-step="1" style="--w:520px"><span>理解奖励</span><span>78%</span></div>
+          <div class="funnel-layer hot" data-step="2" style="--w:330px"><span>相信能拿到</span><span>42%</span></div>
+          <div class="funnel-layer" data-step="3" style="--w:260px"><span>完成答卷</span><span>34%</span></div>
+        </div>
+        <div class="funnel-note" data-step="4">
+          最大流失点：不是钱少，是兑现规则不清楚
+          <small>标注层必须写具体原因，不能只写"优化转化"。</small>
+        </div>
+      </div>
+      <footer class="meta" data-role="support"><span>付费问卷激励设计公开课 · 教学示例数据</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 高级组件：causal-chain 因果链 -->
+    <section class="slide layout-causal-chain" data-title="机制页" data-slide-id="s05">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm">因果链：把激励从成本变成信任信号</h2>
+        <p class="takeaway">公开课里要讲机制，而不只是列做法。</p>
+      </header>
+      <div class="chain" data-role="main-structure">
+        <div class="chain-card" data-step="0">
+          <div class="k">动作</div>
+          <div class="t">提前说明奖励规则</div>
+          <div class="m">金额、门槛、发放时间都放在开头。</div>
+        </div>
+        <div class="chain-card" data-step="1">
+          <div class="k">感知</div>
+          <div class="t">用户获得确定感</div>
+          <div class="m">不需要猜测是否被套路。</div>
+        </div>
+        <div class="chain-card" data-step="2">
+          <div class="k">行为</div>
+          <div class="t">更愿意投入认真答案</div>
+          <div class="m">完成率和回答质量同时提升。</div>
+        </div>
+        <div class="chain-card result" data-step="3">
+          <div class="k">结果</div>
+          <div class="t">付费不只是激励，而是契约</div>
+          <div class="m">产品获得更可信的用户反馈。</div>
+        </div>
+      </div>
+      <footer class="meta" data-role="support"><span>付费问卷激励设计公开课</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 高级组件：matrix 矩阵判断 -->
+    <section class="slide layout-matrix" data-title="优先级页" data-slide-id="s06">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm">矩阵判断：不是所有问卷都该付费</h2>
+        <p class="takeaway">横轴看用户投入，纵轴看决策价值，右上角才值得认真设计付费答卷。</p>
+      </header>
+      <div class="matrix-wrap" data-role="main-structure" data-step="0">
+        <div class="matrix-target" data-step="1"></div>
+        <div class="matrix-label" data-step="1">优先投入区</div>
+        <div class="matrix-axis y">决策价值高 ↑</div>
+        <div class="matrix-axis x">用户投入高 →</div>
+        <div class="matrix-point" data-step="2" style="--x:22%; --y:28%">满意度打分</div>
+        <div class="matrix-point" data-step="2" style="--x:72%; --y:26%">长问卷泛样本</div>
+        <div class="matrix-point" data-step="3" style="--x:28%; --y:78%">NPS 追问</div>
+        <div class="matrix-point hot" data-step="3" style="--x:76%; --y:76%">目标用户深访问卷</div>
+      </div>
+      <footer class="meta" data-role="support"><span>付费问卷激励设计公开课</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 高级组件：journey 用户路径蓝图 -->
+    <section class="slide layout-journey" data-title="路径页" data-slide-id="s07">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm">用户路径蓝图：奖励在哪一步起作用</h2>
+        <p class="takeaway">上层是用户动作，下层是产品机制；风险点标在动作层，机制必须逐格对应。</p>
+      </header>
+      <div class="journey-wrap" data-role="main-structure">
+        <div class="j-cell j-head"></div>
+        <div class="j-cell j-head" data-step="0">看到问卷</div>
+        <div class="j-cell j-head" data-step="0">判断值不值</div>
+        <div class="j-cell j-head" data-step="0">答题中</div>
+        <div class="j-cell j-head" data-step="0">领取奖励</div>
+        <div class="j-cell j-head" data-step="0">复访推荐</div>
+        <div class="j-cell j-lane">用户动作</div>
+        <div class="j-cell" data-step="1">扫码或点开入口</div>
+        <div class="j-cell" data-step="1">估算耗时和回报<span class="risk" data-step="3"></span></div>
+        <div class="j-cell" data-step="1">持续投入注意力</div>
+        <div class="j-cell" data-step="1">按规则兑现<span class="risk" data-step="3"></span></div>
+        <div class="j-cell" data-step="1">决定是否再参与</div>
+        <div class="j-cell j-lane">产品机制</div>
+        <div class="j-cell" data-step="2">入口写明奖励和耗时</div>
+        <div class="j-cell" data-step="2">首屏给出金额与门槛</div>
+        <div class="j-cell" data-step="2">进度条 + 剩余题量</div>
+        <div class="j-cell" data-step="2">自动到账，无需申请</div>
+        <div class="j-cell" data-step="2">发放记录可查询</div>
+      </div>
+      <p class="journey-note" data-step="3">● 两个红点是流失高发位：预期不清、兑现不畅</p>
+      <footer class="meta" data-role="support"><span>付费问卷激励设计公开课</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 高级组件：before-after 前后对照 -->
+    <section class="slide layout-before-after" data-title="对照页" data-slide-id="s08">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm">改造对照：同一份问卷开头的两种写法</h2>
+        <p class="takeaway">两边条目必须一一对应；after 要指出改造原则，不能只是更好看。</p>
+      </header>
+      <div class="ba" data-role="main-structure">
+        <div class="ba-panel before" data-step="0">
+          <div class="ba-head"><span class="mark">✕</span>改造前</div>
+          <div class="ba-item">"完成问卷<em>有机会</em>获得奖励"，金额和概率都不说。</div>
+          <div class="ba-item">奖励规则藏在结尾，答完才知道要<em>抽奖</em>。</div>
+          <div class="ba-item">兑现要<em>手动申请</em>，三个工作日后发放。</div>
+        </div>
+        <div class="ba-panel after" data-step="1">
+          <div class="ba-head"><span class="mark">✓</span>改造后</div>
+          <div class="ba-item">开头写明"<em>完成即得 15 元</em>，约 6 分钟"。</div>
+          <div class="ba-item">规则前置：金额、门槛、发放时间放在首屏。</div>
+          <div class="ba-item"><em>自动到账</em>，完成页直接显示发放状态。</div>
+        </div>
+      </div>
+      <div class="ba-principle" data-step="2">改造原则：把"有机会"换成"确定感"，把申请换成自动</div>
+      <footer class="meta" data-role="support"><span>付费问卷激励设计公开课</span><span class="page"></span></footer>
+    </section>
+
+
+
+
+    <!-- 版式 7：checklist 清单 -->
+    <section class="slide layout-checklist" data-title="行动页" data-slide-id="s09">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm" style="text-align:center; max-width:none">下一份问卷，先做这三件事</h2>
+      </header>
+      <div class="list" data-role="main-structure">
+        <div class="check-row" data-step="0">
+          <div class="tick">✓</div>
+          <div class="txt"><strong>把奖励写进第一屏：</strong>金额、耗时、发放时间，一个都不许藏到结尾。</div>
+        </div>
+        <div class="check-row" data-step="1">
+          <div class="tick">✓</div>
+          <div class="txt"><strong>把抽奖换成确定发放：</strong>预算不变时，宁可金额小，也要<em>确定拿到</em>。</div>
+        </div>
+        <div class="check-row" data-step="2">
+          <div class="tick">✓</div>
+          <div class="txt"><strong>把申请换成自动到账：</strong>完成页直接显示发放状态，兑现记录可查询。</div>
+        </div>
+      </div>
+      <footer class="meta" data-role="support"><span>付费问卷激励设计公开课</span><span class="page"></span></footer>
+    </section>
+
+
+    <!-- 版式 9：end 收束页 -->
+    <section class="slide layout-end" data-title="结尾页" data-slide-id="s10">
+      <div class="end-block" data-role="main-structure">
+        <p class="lead" data-reveal style="--i:0">回去只改一件事</p>
+        <div data-reveal style="--i:1">
+          <h2 data-primary-anchor data-role="rhythm">把「有机会」，改成「确定拿到」。</h2>
+          <div class="underline"></div>
+        </div>
+      </div>
+      <footer class="meta" data-role="support"><span>付费问卷激励设计公开课</span><span class="page"></span></footer>
+    </section>
+
+  </main>
+
+  <script>
+    /* ---------- 固定舞台等比缩放 ---------- */
+    const stage = document.querySelector('.stage');
+    const DESIGN_W = 1280, DESIGN_H = 720;
+    function fitStage() {
+      const scale = Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H);
+      stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+    window.addEventListener('resize', fitStage);
+    fitStage();
+
+    /* ---------- 翻页 + 两种揭示（与 index.html 相同机制） ---------- */
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+    let staticMode = false;
+
+    function stepsOf(slide) {
+      const groups = new Map();
+      slide.querySelectorAll('[data-step]').forEach((el) => {
+        const key = Number(el.dataset.step);
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(el);
+      });
+      return Array.from(groups.entries())
+        .sort((a, b) => a[0] - b[0])
+        .map(([, els]) => els);
+    }
+
+    function countUp(el) {
+      const target = parseFloat(el.dataset.countTo);
+      const decimals = parseInt(el.dataset.decimals || '0', 10);
+      if (reduceMotion) { el.textContent = target.toFixed(decimals); return; }
+      const duration = 700;
+      const start = performance.now();
+      function tick(now) {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = (target * eased).toFixed(decimals);
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function revealEl(el) {
+      el.classList.add('revealed');
+      if (el.dataset.countTo) countUp(el);
+      el.querySelectorAll('[data-count-to]').forEach(countUp);
+    }
+    function revealAuto(slide) {
+      slide.querySelectorAll('[data-reveal]').forEach(revealEl);
+    }
+    function revealNextStep(slide) {
+      const pending = stepsOf(slide).find((els) => !els[0].classList.contains('revealed'));
+      if (!pending) return false;
+      pending.forEach(revealEl);
+      return true;
+    }
+    function unrevealLastStep(slide) {
+      const done = stepsOf(slide).filter((els) => els[0].classList.contains('revealed'));
+      const last = done.at(-1);
+      if (!last) return false;
+      last.forEach((el) => el.classList.remove('revealed'));
+      return true;
+    }
+    function revealAll(slide) {
+      revealAuto(slide);
+      stepsOf(slide).forEach((els) => els.forEach(revealEl));
+    }
+    function resetReveal(slide) {
+      slide.querySelectorAll('.revealed').forEach((el) => el.classList.remove('revealed'));
+    }
+
+    function show(index, { revealMode = 'enter' } = {}) {
+      current = Math.max(0, Math.min(index, slides.length - 1));
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === current);
+        if (i !== current) resetReveal(slide);
+        const page = slide.querySelector('.page');
+        if (page) page.textContent = `${i + 1} / ${slides.length}`;
+      });
+      const active = slides[current];
+      if (revealMode === 'all' || reduceMotion || staticMode) revealAll(active);
+      else revealAuto(active);
+    }
+
+    function next() {
+      if (!revealNextStep(slides[current])) show(current + 1);
+    }
+    function prev() {
+      if (!unrevealLastStep(slides[current])) show(current - 1, { revealMode: 'all' });
+    }
+    function toggleStaticMode() {
+      staticMode = !staticMode;
+      if (staticMode) revealAll(slides[current]);
+      else show(current);
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (['ArrowRight', ' ', 'PageDown'].includes(event.key)) { event.preventDefault(); next(); }
+      if (['ArrowLeft', 'PageUp'].includes(event.key)) { event.preventDefault(); prev(); }
+      if (event.key === 'Home') show(0);
+      if (event.key === 'End') show(slides.length - 1, { revealMode: 'all' });
+      if (event.key.toLowerCase() === 'b') toggleStaticMode();
+    });
+    document.addEventListener('click', (event) => {
+      if (event.clientX > window.innerWidth / 2) next();
+      else prev();
+    });
+
+    show(0);
+  </script>
+</body>
+</html>

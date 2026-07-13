@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HTML 动态演示稿 · 版式库模板</title>
+  <style>
+    /* ==========================================================
+       设计 Token 层
+       改整套 deck 的气质时优先改这里，不要在版式里写死颜色。
+       禁止默认套用"科技蓝紫渐变"。
+       ========================================================== */
+    :root {
+      /* 背景两级 */
+      --bg: #f6f4ee;            /* 纸感底 */
+      --bg-raise: #ffffff;      /* 卡片/面板 */
+      /* 文字三级 */
+      --ink: #17191d;
+      --ink-2: #4b4f56;
+      --ink-3: #8a8f98;
+      /* 强调色两个：主强调 + 暖对比 */
+      --accent: #0e6e60;
+      --accent-warm: #b4552d;
+      /* 深色章节页 token */
+      --dark-bg: #101418;
+      --dark-ink: #f2efe7;
+      --dark-ink-2: #a8adb5;
+      /* 字体策略：标题衬线制造正式感，正文无衬线，数字等宽表格 */
+      --font-display: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+	      --font-body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+	      --line: rgba(23, 25, 29, .12);
+	      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+	      --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+	      --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+	    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: #e9e6de; /* 舞台外的衬底，比舞台略深 */
+      font-family: var(--font-body);
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    /* ==========================================================
+       固定 16:9 舞台：排版确定性的来源。
+       所有字号、留白按 1280x720 设计，JS 按窗口等比缩放。
+       ========================================================== */
+    .stage {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1280px;
+      height: 720px;
+      transform: translate(-50%, -50%) scale(1);
+      transform-origin: center;
+      background: var(--bg);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .18);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 64px 72px 48px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(24px);
+	      transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
+    }
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    /* 深色页共用：章节页、结尾页 */
+    .slide.dark {
+      background: var(--dark-bg);
+      color: var(--dark-ink);
+    }
+    /* 颗粒质感 + 柔光晕，避免深色页显得平 */
+    .slide.dark::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(900px 480px at 78% 18%, rgba(14, 110, 96, .28), transparent 62%),
+        radial-gradient(700px 420px at 12% 88%, rgba(180, 85, 45, .14), transparent 60%);
+    }
+    .slide.dark::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .5;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    .slide.dark > * { position: relative; z-index: 1; }
+
+    /* ---------- 通用文字 ---------- */
+    .kicker {
+      font-size: 15px;
+      letter-spacing: .35em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin: 0 0 14px;
+    }
+    .dark .kicker { color: color-mix(in srgb, var(--accent), #ffffff 42%); }
+    h1, h2, blockquote {
+      font-family: var(--font-display);
+      font-weight: 600;
+      margin: 0;
+      line-height: 1.14;
+      letter-spacing: .01em;
+    }
+    h1 { font-size: 76px; max-width: 980px; }
+    h2 { font-size: 44px; max-width: 940px; }
+    .takeaway {
+      max-width: 860px;
+      color: var(--accent);
+      font-size: 22px;
+      line-height: 1.5;
+      margin: 10px 0 0;
+    }
+    .meta {
+      color: var(--ink-3);
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-self: end;
+    }
+    .dark .meta { color: var(--dark-ink-2); }
+    .num { font-variant-numeric: tabular-nums; }
+
+    /* ---------- 两种揭示 ----------
+       data-reveal：进入页面时自动入场，--i 决定错峰延迟（stagger）。
+       data-step：按前进键才揭示，--i 决定步骤顺序；同 --i 为同一步。 */
+    [data-reveal], [data-step] {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 380ms ease-out, transform 380ms ease-out;
+    }
+    [data-reveal] { transition-delay: calc(var(--i, 0) * 90ms); }
+    .active [data-reveal].revealed,
+    .active [data-step].revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ==========================================================
+       版式 1 / hero 封面：大衬线标题 + 分层入场
+       ========================================================== */
+    .layout-hero { grid-template-rows: 1fr auto; align-content: end; }
+    .layout-hero .hero-block { align-self: end; }
+    .layout-hero .subtitle {
+      font-size: 22px;
+      color: var(--ink-2);
+      max-width: 760px;
+      line-height: 1.6;
+      margin: 22px 0 0;
+    }
+    .layout-hero .rule {
+      width: 72px; height: 3px; background: var(--accent);
+      margin: 26px 0 0; border: 0;
+    }
+
+    /* ==========================================================
+       版式 2 / section-impact 章节页：深色 + 巨型章节编号
+       ========================================================== */
+    .layout-section { grid-template-rows: 1fr auto; }
+    .layout-section .section-no {
+      position: absolute;
+      right: 48px; top: -30px;
+      font-family: var(--font-display);
+      font-size: 340px;
+      line-height: 1;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(242, 239, 231, .22);
+      user-select: none;
+    }
+    .layout-section .section-body { align-self: end; }
+    .layout-section h2 { font-size: 60px; color: var(--dark-ink); }
+    .layout-section .section-lede {
+      color: var(--dark-ink-2);
+      font-size: 20px; max-width: 680px; line-height: 1.6; margin: 18px 0 0;
+    }
+
+    /* ==========================================================
+       版式 3 / framework 方法论页：HTML 节点 + SVG 连线路径绘制
+       注意：文字一律用 HTML 元素，不要用 SVG <text>——
+       在 transform: scale 的舞台内 Chromium 会把 SVG 文字画错位置。
+       连线用 .draw 描边动画；PPT 降级为最终静态图。
+       ========================================================== */
+    .layout-framework .figure {
+      align-self: center;
+      justify-self: center;
+      position: relative;
+      width: 880px;
+      height: 380px;
+    }
+    .layout-framework .wires { position: absolute; inset: 0; }
+    .fw-node {
+      position: absolute;
+      width: 200px;
+      height: 86px;
+      background: var(--bg-raise);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      display: grid;
+      place-content: center;
+      text-align: center;
+      gap: 4px;
+    }
+    .fw-node .t { font-size: 17px; }
+    .fw-node .s { font-size: 12px; color: var(--ink-3); }
+    .fw-core {
+      position: absolute;
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: grid;
+      place-content: center;
+      font-family: var(--font-display);
+      font-size: 19px;
+    }
+    .draw {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 2;
+      stroke-dasharray: var(--len, 300);
+      stroke-dashoffset: var(--len, 300);
+      opacity: 1;
+      transform: none;
+      transition: stroke-dashoffset 700ms ease-out;
+    }
+    .active .draw.revealed { stroke-dashoffset: 0; }
+
+    /* ---------- 生图资产嵌入（混合渲染，见 07 参考文档） ----------
+       白底生成图叠在浅色页上：multiply 融合 + 提白滤镜消除近白灰底。
+       用法：<img class="gen-asset" src="assets/gen/xx.png" style="width:210px; left:620px; top:316px;">
+       可挂 data-reveal / data-step；深色页（.dark）不可用 multiply，需真透明 PNG。 */
+    .gen-asset {
+      position: absolute;
+      mix-blend-mode: multiply;
+      filter: brightness(1.06) contrast(1.12);
+      pointer-events: none;
+    }
+
+    /* ==========================================================
+       版式 4 / contrast 对照页：误区 vs 更好的做法
+       ========================================================== */
+    .layout-contrast .duo {
+      align-self: center;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+    .panel {
+      border-radius: 10px;
+      padding: 28px 30px;
+      min-height: 300px;
+    }
+    .panel h3 {
+      margin: 0 0 16px;
+      font-size: 17px;
+      letter-spacing: .18em;
+    }
+    .panel ul { margin: 0; padding-left: 20px; display: grid; gap: 12px; }
+    .panel li { font-size: 19px; line-height: 1.55; }
+    .panel-bad {
+      background: color-mix(in srgb, var(--accent-warm), var(--bg) 92%);
+      border: 1px solid color-mix(in srgb, var(--accent-warm), transparent 70%);
+    }
+    .panel-bad h3 { color: var(--accent-warm); }
+    .panel-good {
+      background: color-mix(in srgb, var(--accent), var(--bg) 92%);
+      border: 1px solid color-mix(in srgb, var(--accent), transparent 70%);
+    }
+    .panel-good h3 { color: var(--accent); }
+
+    /* ==========================================================
+       版式 5 / data-card 数据页：大数字 count-up + 解释
+       数字必须有真实来源；没有来源就不要用这个版式。
+       ========================================================== */
+    .layout-data .stats {
+      align-self: center;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    .stat {
+      background: var(--bg-raise);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 30px 28px 26px;
+    }
+    .stat .value {
+      font-family: var(--font-display);
+      font-size: 64px;
+      line-height: 1;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+    .stat .value .unit { font-size: 26px; margin-left: 2px; }
+    .stat .label { margin-top: 14px; font-size: 17px; color: var(--ink-2); line-height: 1.5; }
+    .stat .source { margin-top: 10px; font-size: 12px; color: var(--ink-3); }
+
+    /* ==========================================================
+       版式 6 / quote-principle 原则页：一个强句子
+       ========================================================== */
+    .layout-quote { grid-template-rows: 1fr auto; }
+    .layout-quote blockquote {
+      align-self: center;
+      justify-self: center;
+      text-align: center;
+      font-size: 52px;
+      line-height: 1.35;
+      max-width: 920px;
+    }
+    .layout-quote blockquote em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .layout-quote .attribution {
+      text-align: center;
+      color: var(--ink-3);
+      font-size: 16px;
+      margin-top: 26px;
+    }
+
+    /* ==========================================================
+       版式 7 / content 常规内容页：卡片要点（连续使用不得超过 3 页）
+       ========================================================== */
+    .layout-content .body {
+      align-self: center;
+      display: grid;
+      gap: 16px;
+      max-width: 960px;
+    }
+    .point {
+      background: var(--bg-raise);
+      border: 1px solid var(--line);
+      padding: 20px 24px;
+      border-radius: 8px;
+      font-size: 21px;
+      line-height: 1.5;
+    }
+    .point strong { color: var(--accent); }
+
+    /* ==========================================================
+       版式 8 / case-walkthrough 案例拆解页：全景 + 局部放大标注
+       全景区用占位框或真实素材；禁止伪造真实截图。
+       ========================================================== */
+    .layout-case .case-grid {
+      align-self: center;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    .case-canvas {
+      position: relative;
+      height: 400px;
+      background:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 40px 40px;
+      background-color: var(--bg-raise);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+    .case-canvas .placeholder-hint {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      color: var(--ink-3);
+      font-size: 15px;
+    }
+    .case-marker {
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: grid;
+      place-content: center;
+      font-size: 16px;
+      font-variant-numeric: tabular-nums;
+      box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent), transparent 78%);
+    }
+    .case-notes { display: grid; gap: 14px; }
+    .case-note {
+      background: var(--bg-raise);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+    .case-note .n {
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      margin-right: 8px;
+    }
+    .case-note .d { font-size: 17px; line-height: 1.5; color: var(--ink-2); margin-top: 6px; }
+
+    /* ==========================================================
+       版式 9 / process-map 流程页：路径绘制 + 阶段分步推进
+       ========================================================== */
+    .layout-process .flow {
+      align-self: center;
+      justify-self: center;
+      position: relative;
+      width: 1080px;
+      height: 320px;
+    }
+    .layout-process .wires { position: absolute; inset: 0; }
+    .stage-node {
+      position: absolute;
+      width: 210px;
+      text-align: center;
+    }
+    .stage-node .dot {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto;
+      border-radius: 50%;
+      background: var(--bg-raise);
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      display: grid;
+      place-content: center;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-variant-numeric: tabular-nums;
+    }
+    .stage-node .t { margin-top: 14px; font-size: 19px; }
+    .stage-node .s { margin-top: 6px; font-size: 14px; color: var(--ink-3); line-height: 1.5; }
+
+    /* ==========================================================
+       版式 10 / hero-end 结尾页：深色收束 + 行动号召
+       ========================================================== */
+    .layout-end { grid-template-rows: 1fr auto; }
+    .layout-end .end-block { align-self: center; justify-self: center; text-align: center; }
+    .layout-end h2 { font-size: 58px; color: var(--dark-ink); }
+    .layout-end .cta {
+      margin: 26px 0 0;
+      font-size: 20px;
+      color: color-mix(in srgb, var(--accent), #ffffff 42%);
+      letter-spacing: .06em;
+    }
+
+    /* ---------- 减少动画 ---------- */
+    @media (prefers-reduced-motion: reduce) {
+      .slide, [data-reveal], [data-step], .draw {
+        transition: none !important;
+      }
+      [data-reveal], [data-step] { opacity: 1; transform: none; }
+      .draw { stroke-dashoffset: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-live="polite">
+
+    <!-- 版式 1：hero 封面 -->
+    <section class="slide layout-hero active" data-title="封面" data-slide-id="template-s01">
+      <div class="hero-block" data-role="main-structure">
+        <p class="kicker" data-reveal style="--i:0">副标题 / 场合 / 日期</p>
+        <h1 data-primary-anchor data-role="rhythm" data-reveal style="--i:1">演示标题：一句有立场的话</h1>
+        <hr class="rule" data-reveal style="--i:2">
+        <p class="subtitle" data-reveal style="--i:3">一句话说明这套演示要证明什么、给谁看。封面允许留大量空白，不要塞要点卡片。</p>
+      </div>
+      <footer class="meta" data-role="support"><span>作者 / 组织</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 版式 2：section-impact 章节页（深色） -->
+    <section class="slide dark layout-section" data-title="章节页" data-slide-id="template-s02">
+      <div class="section-no" aria-hidden="true">01</div>
+      <div class="section-body" data-role="main-structure">
+        <p class="kicker" data-reveal style="--i:0">第一章</p>
+        <h2 data-primary-anchor data-role="rhythm" data-reveal style="--i:1">章节标题：建立段落感</h2>
+        <p class="section-lede" data-reveal style="--i:2">一句话说明这一章解决什么问题。深色页负责制造节奏，不承载密集信息。</p>
+      </div>
+      <footer class="meta" data-role="support"><span>章节页每章一张</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 版式 3：framework 方法论页（SVG 节点 + 路径绘制） -->
+    <section class="slide layout-framework" data-title="框架页" data-slide-id="template-s03">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm">方法论框架：三要素模型</h2>
+        <p class="takeaway">节点先出现，连线随后绘制，中心结论最后落定。</p>
+      </header>
+      <div class="figure" data-role="main-structure" role="img" aria-label="三要素框架图">
+        <!-- 连线：第二步。--len 为路径长度，供描边动画使用 -->
+        <svg class="wires" width="880" height="380" viewBox="0 0 880 380" aria-hidden="true">
+          <path class="draw" data-step="1" d="M 240 83 H 640" style="--len:400"/>
+          <path class="draw" data-step="1" d="M 190 126 L 390 254" style="--len:240"/>
+          <path class="draw" data-step="1" d="M 690 126 L 490 254" style="--len:240"/>
+        </svg>
+        <!-- 三个节点：第一步。文字用 HTML，不用 SVG text -->
+        <div class="fw-node" data-step="0" style="left:40px; top:40px">
+          <div class="t">要素一</div><div class="s">一句话解释</div>
+        </div>
+        <div class="fw-node" data-step="0" style="left:640px; top:40px">
+          <div class="t">要素二</div><div class="s">一句话解释</div>
+        </div>
+        <div class="fw-node" data-step="0" style="left:340px; top:254px">
+          <div class="t">要素三</div><div class="s">一句话解释</div>
+        </div>
+        <!-- 中心结论：第三步 -->
+        <div class="fw-core" data-step="2" style="left:384px; top:64px">核心结论</div>
+      </div>
+      <footer class="meta" data-role="support"><span>framework 版式</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 版式 4：contrast 对照页 -->
+    <section class="slide layout-contrast" data-title="对照页" data-slide-id="template-s04">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm">误区与改造：先看错的，再看对的</h2>
+        <p class="takeaway">前进键先揭示误区，再揭示改造后版本，制造认知反差。</p>
+      </header>
+      <div class="duo" data-role="main-structure">
+        <div class="panel panel-bad" data-step="0">
+          <h3>常见误区</h3>
+          <ul>
+            <li>坏做法一：具体描述。</li>
+            <li>坏做法二：具体描述。</li>
+            <li>坏做法三：具体描述。</li>
+          </ul>
+        </div>
+        <div class="panel panel-good" data-step="1">
+          <h3>更好的做法</h3>
+          <ul>
+            <li>对应改造一：具体描述。</li>
+            <li>对应改造二：具体描述。</li>
+            <li>对应改造三：具体描述。</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="meta" data-role="support"><span>contrast 版式</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 版式 5：data-card 数据页（count-up） -->
+    <section class="slide layout-data" data-title="数据页" data-slide-id="template-s05">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm">关键指标：数字必须有来源</h2>
+        <p class="takeaway">数字揭示时向上滚动到最终值；没有来源的数字不要出现在这一页。</p>
+      </header>
+      <div class="stats" data-role="main-structure">
+        <div class="stat" data-reveal style="--i:0">
+          <div class="value"><span class="num" data-count-to="87">0</span><span class="unit">%</span></div>
+          <p class="label">指标一的一句话解释。</p>
+          <p class="source">来源：替换为真实来源</p>
+        </div>
+        <div class="stat" data-reveal style="--i:1">
+          <div class="value"><span class="num" data-count-to="3.2" data-decimals="1">0</span><span class="unit">倍</span></div>
+          <p class="label">指标二的一句话解释。</p>
+          <p class="source">来源：替换为真实来源</p>
+        </div>
+        <div class="stat" data-reveal style="--i:2">
+          <div class="value"><span class="num" data-count-to="1200">0</span><span class="unit">万</span></div>
+          <p class="label">指标三的一句话解释。</p>
+          <p class="source">来源：替换为真实来源</p>
+        </div>
+      </div>
+      <footer class="meta" data-role="support"><span>data-card 版式</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 版式 6：quote-principle 原则页 -->
+    <section class="slide layout-quote" data-title="原则页" data-slide-id="template-s06">
+      <blockquote data-primary-anchor data-role="main-structure rhythm" data-reveal style="--i:0">一个值得被记住的强句子，<em>关键词</em>用强调色标出。</blockquote>
+      <p class="attribution" data-reveal style="--i:1">—— 出处或作者，没有出处就不要署名</p>
+      <footer class="meta" data-role="support"><span>quote-principle 版式</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 版式 7：content 常规内容页 -->
+    <section class="slide layout-content" data-title="内容页" data-slide-id="template-s07">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm">常规内容页</h2>
+        <p class="takeaway">本页 takeaway：一句话说明本页结论。</p>
+      </header>
+      <div class="body" data-role="main-structure">
+        <div class="point" data-step="0"><strong>要点一：</strong>说明文字。</div>
+        <div class="point" data-step="1"><strong>要点二：</strong>说明文字。</div>
+        <div class="point" data-step="2"><strong>要点三：</strong>说明文字。连续卡片页不得超过 3 页。</div>
+      </div>
+      <footer class="meta" data-role="support"><span>使用方向键或空格翻页</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 版式 8：case-walkthrough 案例拆解页（局部放大标注） -->
+    <section class="slide layout-case" data-title="案例页" data-slide-id="template-s08">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm">案例拆解：全景加局部放大</h2>
+        <p class="takeaway">左侧放案例全景（真实素材或占位框），右侧标注逐步揭示。</p>
+      </header>
+      <div class="case-grid" data-role="main-structure">
+        <div class="case-canvas">
+          <p class="placeholder-hint">案例全景占位：替换为真实素材或结构示意，不要伪造截图</p>
+          <div class="case-marker" data-step="0" style="left:12%; top:18%">1</div>
+          <div class="case-marker" data-step="1" style="left:56%; top:44%">2</div>
+          <div class="case-marker" data-step="2" style="left:30%; top:74%">3</div>
+        </div>
+        <div class="case-notes">
+          <div class="case-note" data-step="0">
+            <span class="n">1</span>看点一
+            <div class="d">这里发生了什么、为什么值得看。</div>
+          </div>
+          <div class="case-note" data-step="1">
+            <span class="n">2</span>看点二
+            <div class="d">这里发生了什么、为什么值得看。</div>
+          </div>
+          <div class="case-note" data-step="2">
+            <span class="n">3</span>看点三
+            <div class="d">这里发生了什么、为什么值得看。</div>
+          </div>
+        </div>
+      </div>
+      <footer class="meta" data-role="support"><span>case-walkthrough 版式</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 版式 9：process-map 流程页（路径绘制 + 阶段推进） -->
+    <section class="slide layout-process" data-title="流程页" data-slide-id="template-s09">
+      <header>
+        <h2 data-primary-anchor data-role="rhythm">流程路径：入口、过程、结果</h2>
+        <p class="takeaway">阶段节点分步推进，连线随路径绘制。</p>
+      </header>
+      <div class="flow" data-role="main-structure">
+        <svg class="wires" width="1080" height="320" viewBox="0 0 1080 320" aria-hidden="true">
+          <path class="draw" data-step="1" d="M 140 60 H 395" style="--len:260"/>
+          <path class="draw" data-step="2" d="M 465 60 H 720" style="--len:260"/>
+          <path class="draw" data-step="3" d="M 781 78 C 920 170, 690 226, 466 226" style="--len:600"/>
+        </svg>
+        <div class="stage-node" data-step="0" style="left:0; top:34px">
+          <div class="dot">1</div>
+          <div class="t">阶段一</div>
+          <div class="s">入口条件与动作。</div>
+        </div>
+        <div class="stage-node" data-step="1" style="left:325px; top:34px">
+          <div class="dot">2</div>
+          <div class="t">阶段二</div>
+          <div class="s">关键过程与产物。</div>
+        </div>
+        <div class="stage-node" data-step="2" style="left:650px; top:34px">
+          <div class="dot">3</div>
+          <div class="t">阶段三</div>
+          <div class="s">结果与验收标准。</div>
+        </div>
+        <div class="stage-node" data-step="3" style="left:325px; top:200px">
+          <div class="dot">4</div>
+          <div class="t">复盘回流</div>
+          <div class="s">形成闭环，进入下一轮。</div>
+        </div>
+      </div>
+      <footer class="meta" data-role="support"><span>process-map 版式</span><span class="page"></span></footer>
+    </section>
+
+    <!-- 版式 10：hero-end 结尾页（深色） -->
+    <section class="slide dark layout-end" data-title="结尾页" data-slide-id="template-s10">
+      <div class="end-block" data-role="main-structure">
+        <p class="kicker" data-reveal style="--i:0">结束语</p>
+        <h2 data-primary-anchor data-role="rhythm" data-reveal style="--i:1">用一句话收束整套演示</h2>
+        <p class="cta" data-reveal style="--i:2">下一步行动 / 联系方式 / 二维码占位</p>
+      </div>
+      <footer class="meta" data-role="support"><span>谢谢</span><span class="page"></span></footer>
+    </section>
+
+  </main>
+
+  <script>
+    /* ---------- 固定舞台等比缩放 ---------- */
+    const stage = document.querySelector('.stage');
+    const DESIGN_W = 1280, DESIGN_H = 720;
+    function fitStage() {
+      const scale = Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H);
+      stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+    window.addEventListener('resize', fitStage);
+    fitStage();
+
+    /* ---------- 翻页 + 两种揭示 ----------
+       data-reveal：进入页面自动入场（stagger 由 CSS --i 延迟实现）。
+       data-step：按前进键分步揭示，同 data-step 值为同一步。 */
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+    let staticMode = false;
+
+    function stepsOf(slide) {
+      const groups = new Map();
+      slide.querySelectorAll('[data-step]').forEach((el) => {
+        const key = Number(el.dataset.step);
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(el);
+      });
+      return Array.from(groups.entries())
+        .sort((a, b) => a[0] - b[0])
+        .map(([, els]) => els);
+    }
+
+    function countUp(el) {
+      const target = parseFloat(el.dataset.countTo);
+      const decimals = parseInt(el.dataset.decimals || '0', 10);
+      if (reduceMotion) { el.textContent = target.toFixed(decimals); return; }
+      const duration = 700;
+      const start = performance.now();
+      function tick(now) {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = (target * eased).toFixed(decimals);
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function revealEl(el) {
+      el.classList.add('revealed');
+      if (el.dataset.countTo) countUp(el);
+      el.querySelectorAll('[data-count-to]').forEach(countUp);
+    }
+    function revealAuto(slide) {
+      slide.querySelectorAll('[data-reveal]').forEach(revealEl);
+    }
+    function revealNextStep(slide) {
+      const pending = stepsOf(slide).find((els) => !els[0].classList.contains('revealed'));
+      if (!pending) return false;
+      pending.forEach(revealEl);
+      return true;
+    }
+    function unrevealLastStep(slide) {
+      const done = stepsOf(slide).filter((els) => els[0].classList.contains('revealed'));
+      const last = done.at(-1);
+      if (!last) return false;
+      last.forEach((el) => el.classList.remove('revealed'));
+      return true;
+    }
+    function revealAll(slide) {
+      revealAuto(slide);
+      stepsOf(slide).forEach((els) => els.forEach(revealEl));
+    }
+    function resetReveal(slide) {
+      slide.querySelectorAll('.revealed').forEach((el) => el.classList.remove('revealed'));
+    }
+
+    function show(index, { revealMode = 'enter' } = {}) {
+      current = Math.max(0, Math.min(index, slides.length - 1));
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === current);
+        if (i !== current) resetReveal(slide);
+        const page = slide.querySelector('.page');
+        if (page) page.textContent = `${i + 1} / ${slides.length}`;
+      });
+      const active = slides[current];
+      if (revealMode === 'all' || reduceMotion || staticMode) revealAll(active);
+      else revealAuto(active);
+    }
+
+    function next() {
+      if (!revealNextStep(slides[current])) show(current + 1);
+    }
+    function prev() {
+      if (!unrevealLastStep(slides[current])) show(current - 1, { revealMode: 'all' });
+    }
+    function toggleStaticMode() {
+      staticMode = !staticMode;
+      if (staticMode) revealAll(slides[current]);
+      else show(current);
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (['ArrowRight', ' ', 'PageDown'].includes(event.key)) { event.preventDefault(); next(); }
+      if (['ArrowLeft', 'PageUp'].includes(event.key)) { event.preventDefault(); prev(); }
+      if (event.key === 'Home') show(0);
+      if (event.key === 'End') show(slides.length - 1, { revealMode: 'all' });
+      if (event.key.toLowerCase() === 'b') toggleStaticMode();
+    });
+    document.addEventListener('click', (event) => {
+      if (event.clientX > window.innerWidth / 2) next();
+      else prev();
+    });
+
+    show(0);
+  </script>
+</body>
+</html>
