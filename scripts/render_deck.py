@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -30,6 +31,8 @@ EDITORIAL_TEMPLATE = TEMPLATE_DIR / "index.html"
 ENGINE_LAYOUTS = {
     "stack", "bars", "blueprint", "decision-tree", "funnel", "causal-chain",
     "matrix", "journey", "before-after", "waterfall", "gantt", "checklist",
+    "cycle", "radial", "pyramid", "hierarchy", "diagnostic-axis",
+    "system-map", "spectrum",
 }
 LAYOUT_ALIASES = {"journey-blueprint": "journey"}
 # CSS 分块标记关键词 -> 版式 key（hero/end 永远保留）
@@ -38,6 +41,9 @@ CSS_MARKER_KEYS = [
     ("decision-tree", "decision-tree"), ("funnel", "funnel"), ("causal-chain", "causal-chain"),
     ("matrix", "matrix"), ("journey", "journey"), ("before-after", "before-after"),
     ("waterfall", "waterfall"), ("gantt", "gantt"), ("checklist", "checklist"),
+    ("cycle", "cycle"), ("radial", "radial"), ("pyramid", "pyramid"),
+    ("hierarchy", "hierarchy"), ("diagnostic-axis", "diagnostic-axis"),
+    ("system-map", "system-map"), ("spectrum", "spectrum"),
     ("quote", "quote"), ("end", "end"),
 ]
 ALWAYS_KEEP_CSS = {"hero", "end"}
@@ -341,6 +347,216 @@ def gen_blueprint(slide: dict, deck: dict) -> str:
     return section(slide, body, deck)
 
 
+def gen_cycle(slide: dict, deck: dict) -> str:
+    data = slide["data"]
+    count = len(data["items"])
+    nodes = []
+    for i, item in enumerate(data["items"]):
+        angle = -90 + 360 * i / count
+        radians = math.radians(angle)
+        left = round(450 + math.cos(radians) * 350 - 105, 1)
+        top = round(215 + math.sin(radians) * 165 - 38, 1)
+        nodes.append(
+            f'        <div class="cycle-slot" style="left:{left}px;top:{top}px"><div class="cycle-node" data-step="{i + 1}">'
+            f'<b>{esc(item["title"])}</b><span>{esc(item["detail"])}</span></div></div>'
+        )
+    body = (
+        '      <div class="cycle-wrap">\n'
+        '        <div class="cycle-track top" data-connector aria-hidden="true"></div>\n'
+        '        <div class="cycle-track right" data-connector aria-hidden="true"></div>\n'
+        '        <div class="cycle-track bottom" data-connector aria-hidden="true"></div>\n'
+        '        <div class="cycle-track left" data-connector aria-hidden="true"></div>\n'
+        '        <div class="cycle-arrow top" data-connector aria-hidden="true"></div>\n'
+        '        <div class="cycle-arrow right" data-connector aria-hidden="true"></div>\n'
+        '        <div class="cycle-arrow bottom" data-connector aria-hidden="true"></div>\n'
+        '        <div class="cycle-arrow left" data-connector aria-hidden="true"></div>\n'
+        f'        <div class="cycle-center" data-step="0">{esc(data["center"])}</div>\n'
+        + "\n".join(nodes) + "\n      </div>"
+    )
+    return section(slide, body, deck)
+
+
+def gen_radial(slide: dict, deck: dict) -> str:
+    data = slide["data"]
+    n = len(data["spokes"])
+    spokes = []
+    for i, item in enumerate(data["spokes"]):
+        angle = -90 + round(360 * i / n, 3)
+        radians = math.radians(angle)
+        node_left = round(450 + math.cos(radians) * 330 - 105, 1)
+        node_top = round(190 + math.sin(radians) * 140 - 42, 1)
+        cos_a, sin_a = math.cos(radians), math.sin(radians)
+        dx, dy = math.cos(radians) * 330, math.sin(radians) * 140
+        distance = math.hypot(dx, dy)
+        unit_x, unit_y = dx / distance, dy / distance
+        center_edge = min(
+            105 / abs(unit_x) if abs(unit_x) > 0.001 else float("inf"),
+            50 / abs(unit_y) if abs(unit_y) > 0.001 else float("inf"),
+        )
+        node_edge = min(
+            105 / abs(unit_x) if abs(unit_x) > 0.001 else float("inf"),
+            42 / abs(unit_y) if abs(unit_y) > 0.001 else float("inf"),
+        )
+        link_radius = center_edge + 8
+        link_length = max(12, distance - center_edge - node_edge - 16)
+        link_left = round(450 + unit_x * link_radius, 1)
+        link_top = round(190 + unit_y * link_radius, 1)
+        link_angle = round(math.degrees(math.atan2(dy, dx)), 3)
+        spokes.append(
+            f'        <div class="radial-arm" data-connector aria-hidden="true" '
+            f'style="left:{link_left}px;top:{link_top}px;width:{round(link_length, 1)}px;--a:{link_angle}deg"></div>\n'
+            f'        <div class="radial-slot" style="left:{node_left}px;top:{node_top}px"><div class="radial-node'
+            f'{" hot" if item.get("hot") else ""}" data-step="{i + 1}"><b>{esc(item["title"])}</b>'
+            f'<span>{esc(item["detail"])}</span></div></div>'
+        )
+    body = (
+        '      <div class="radial-wrap">\n'
+        f'        <div class="radial-center" data-step="0">{esc(data["center"])}</div>\n'
+        + "\n".join(spokes) + "\n      </div>"
+    )
+    return section(slide, body, deck)
+
+
+def gen_pyramid(slide: dict, deck: dict) -> str:
+    data = slide["data"]
+    count = len(data["layers"])
+    layers = "\n".join(
+        f'        <div class="pyramid-layer{" hot" if item.get("hot") else ""}" data-step="{count - 1 - i}" '
+        f'style="--w:{round(42 + i * (50 / max(1, count - 1)), 1)}%">'
+        f'<b>{esc(item["title"])}</b><span>{esc(item["detail"])}</span></div>'
+        for i, item in enumerate(data["layers"])
+    )
+    body = '      <div class="pyramid-wrap">\n' + layers + "\n      </div>"
+    return section(slide, body, deck)
+
+
+def gen_hierarchy(slide: dict, deck: dict) -> str:
+    data = slide["data"]
+    groups = []
+    for i, group in enumerate(data["groups"]):
+        children = "".join(f'<span>{esc(child)}</span>' for child in group["children"])
+        groups.append(
+            f'        <div class="hierarchy-group" data-step="{i + 1}"><b>{esc(group["title"])}</b>'
+            f'<div>{children}</div></div>'
+        )
+    count = len(data["groups"])
+    drops = "\n".join(
+        f'          <div class="hierarchy-drop" data-connector aria-hidden="true" style="left:{round((i + .5) * 100 / count, 3)}%"></div>'
+        for i in range(count)
+    )
+    rail_left = round(50 / count, 3)
+    rail_width = round(100 - 100 / count, 3)
+    body = (
+        '      <div class="hierarchy-wrap">\n'
+        f'        <div class="hierarchy-root" data-step="0">{esc(data["root"])}</div>\n'
+        '        <div class="hierarchy-links">\n'
+        '          <div class="hierarchy-stem" data-connector aria-hidden="true"></div>\n'
+        f'          <div class="hierarchy-rail" data-connector aria-hidden="true" style="left:{rail_left}%;width:{rail_width}%"></div>\n'
+        + drops + "\n        </div>\n"
+        f'        <div class="hierarchy-groups" style="grid-template-columns:repeat({len(data["groups"])},minmax(0,1fr))">\n'
+        + "\n".join(groups) + "\n        </div>\n      </div>"
+    )
+    return section(slide, body, deck)
+
+
+def gen_diagnostic_axis(slide: dict, deck: dict) -> str:
+    data = slide["data"]
+    x_axis, y_axis = data["x_axis"], data["y_axis"]
+    x_span = x_axis["max"] - x_axis["min"]
+    y_span = y_axis["max"] - y_axis["min"]
+
+    def x_pct(value: float) -> float:
+        return round((value - x_axis["min"]) * 100 / x_span, 3)
+
+    def y_pct(value: float) -> float:
+        return round((value - y_axis["min"]) * 100 / y_span, 3)
+
+    target = data["target"]
+    target_left = x_pct(target["x_min"])
+    target_bottom = y_pct(target["y_min"])
+    target_width = round(x_pct(target["x_max"]) - target_left, 3)
+    target_height = round(y_pct(target["y_max"]) - target_bottom, 3)
+    points = "\n".join(
+        f'          <div class="diagnostic-point{" hot" if point.get("hot") else ""}" data-step="{i + 1}" '
+        f'style="--x:{x_pct(point["x"])}%;--y:{y_pct(point["y"])}%"><span>{esc(point["label"])}</span></div>'
+        for i, point in enumerate(data["points"])
+    )
+    body = (
+        '      <div class="diagnostic-wrap">\n'
+        f'        <div class="diagnostic-y-label">{esc(y_axis["label"])}'
+        f'<small>{esc(y_axis["min"])} → {esc(y_axis["max"])}</small></div>\n'
+        '        <div class="diagnostic-plot">\n'
+        '          <div class="diagnostic-x-axis" data-connector aria-hidden="true"></div>\n'
+        '          <div class="diagnostic-y-axis" data-connector aria-hidden="true"></div>\n'
+        f'          <div class="diagnostic-target" data-step="0" style="--x:{target_left}%;--y:{target_bottom}%;'
+        f'--w:{target_width}%;--h:{target_height}%"><span>{esc(target["label"])}</span></div>\n'
+        + points + "\n        </div>\n"
+        f'        <div class="diagnostic-x-label">{esc(x_axis["label"])}'
+        f'<small>{esc(x_axis["min"])} → {esc(x_axis["max"])}</small></div>\n'
+        "      </div>"
+    )
+    return section(slide, body, deck)
+
+
+def gen_system_map(slide: dict, deck: dict) -> str:
+    data = slide["data"]
+    inputs = "\n".join(
+        f'          <div class="system-node edge" data-step="{i + 1}">{esc(value)}</div>'
+        for i, value in enumerate(data["inputs"])
+    )
+    modules = "\n".join(
+        f'          <div class="system-module{" hot" if module.get("hot") else ""}" data-step="{i + 1}">'
+        f'<b>{esc(module["title"])}</b><span>{esc(module["detail"])}</span></div>'
+        for i, module in enumerate(data["modules"])
+    )
+    outputs = "\n".join(
+        f'          <div class="system-node edge" data-step="{i + 1}">{esc(value)}</div>'
+        for i, value in enumerate(data["outputs"])
+    )
+    body = (
+        '      <div class="system-map-wrap">\n'
+        f'        <div class="system-boundary-label">{esc(data["boundary"])}</div>\n'
+        f'        <div class="system-column inputs"><span class="system-label">输入</span>{inputs}</div>\n'
+        '        <div class="system-links left-links" data-connector aria-hidden="true"></div>\n'
+        f'        <div class="system-core">{modules}</div>\n'
+        '        <div class="system-links right-links" data-connector aria-hidden="true"></div>\n'
+        f'        <div class="system-column outputs"><span class="system-label">输出</span>{outputs}</div>\n'
+        "      </div>"
+    )
+    return section(slide, body, deck)
+
+
+def gen_spectrum(slide: dict, deck: dict) -> str:
+    data = slide["data"]
+    stops = "\n".join(
+        f'          <span data-step="{i + 1}" style="left:{round(i * 100 / (len(data["stops"]) - 1), 3)}%">'
+        f'{esc(value)}</span>'
+        for i, value in enumerate(data["stops"])
+    )
+    target = data.get("target")
+    target_html = ""
+    if isinstance(target, dict):
+        width = round(target["end_pct"] - target["start_pct"], 3)
+        target_html = (
+            f'          <div class="spectrum-target" data-step="0" style="--x:{target["start_pct"]}%;--w:{width}%">'
+            f'<span>{esc(target["label"])}</span></div>\n'
+        )
+    marker = data["marker"]
+    body = (
+        '      <div class="spectrum-wrap">\n'
+        f'        <div class="spectrum-ends"><b>{esc(data["left_label"])}</b><b>{esc(data["right_label"])}</b></div>\n'
+        '        <div class="spectrum-scale">\n'
+        '          <div class="spectrum-line" data-connector aria-hidden="true"></div>\n'
+        + target_html
+        + f'          <div class="spectrum-marker" data-step="{len(data["stops"]) + 1}" style="--x:{marker["position_pct"]}%">'
+        f'<b>{esc(marker["label"])}</b><span>{esc(marker["detail"])}</span></div>\n'
+        f'          <div class="spectrum-stops">{stops}\n          </div>\n'
+        "        </div>\n"
+        "      </div>"
+    )
+    return section(slide, body, deck)
+
+
 ENGINE_GENERATORS = {
     "bars": gen_bars,
     "funnel": gen_funnel,
@@ -354,6 +570,13 @@ ENGINE_GENERATORS = {
     "waterfall": gen_waterfall,
     "stack": gen_stack,
     "blueprint": gen_blueprint,
+    "cycle": gen_cycle,
+    "radial": gen_radial,
+    "pyramid": gen_pyramid,
+    "hierarchy": gen_hierarchy,
+    "diagnostic-axis": gen_diagnostic_axis,
+    "system-map": gen_system_map,
+    "spectrum": gen_spectrum,
 }
 
 HAND_NOTE = ("    <!-- HAND-TRACK 锚点页：以下是引擎生成的起点存根。"

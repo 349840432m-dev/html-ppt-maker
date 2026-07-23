@@ -123,7 +123,7 @@ def main() -> int:
     prs.save(out_path)
     print(f"[WARN] wrote editable simplified fallback: {out_path} with {len(slides)} slide(s)")
     print("[WARN] this file does not preserve HTML layout; do not present it as HTML-matched")
-    print("Next: python3 scripts/apply_ppt_transitions.py "
+    print("Next: run this skill's scripts/run_tool.sh with apply_ppt_transitions.py "
           f"{out_path} --plan {plan_path} --output {out_path.with_suffix('')}-with-transitions.pptx")
     return 0
 

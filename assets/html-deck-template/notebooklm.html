@@ -695,6 +695,179 @@
     .check-row .txt strong { font-weight: 900; }
     .check-row .txt em { font-style: normal; color: var(--red); font-weight: 900; }
 
+    /* ========== 高级组件 / cycle 循环闭环：中心目标 + 环形阶段 ========== */
+    .layout-cycle .cycle-wrap {
+      position: relative; align-self: center; justify-self: center;
+      width: 900px; height: 430px;
+    }
+    .cycle-track { position: absolute; background: var(--navy); }
+    .cycle-track.top, .cycle-track.bottom { width: 292px; height: 7px; left: 304px; }
+    .cycle-track.left, .cycle-track.right { width: 7px; height: 163px; top: 104px; }
+    .cycle-track.top { top: 104px; }
+    .cycle-track.bottom { top: 260px; background: var(--red); }
+    .cycle-track.left { left: 304px; }
+    .cycle-track.right { right: 304px; }
+    .cycle-arrow { position: absolute; width: 14px; height: 14px; background: var(--red); clip-path: polygon(0 0,100% 50%,0 100%); }
+    .cycle-arrow.top { left: 570px; top: 100px; }
+    .cycle-arrow.right { right: 300px; top: 226px; transform: rotate(90deg); }
+    .cycle-arrow.bottom { left: 316px; top: 256px; transform: rotate(180deg); }
+    .cycle-arrow.left { left: 300px; top: 122px; transform: rotate(-90deg); }
+    .cycle-center {
+      position: absolute; left: 370px; top: 168px; width: 160px; height: 92px;
+      background: var(--ink); color: #fff; display: grid; place-items: center;
+      padding: 14px; text-align: center; font-size: 20px; font-weight: 900;
+    }
+    .cycle-slot { position: absolute; width: 210px; }
+    .cycle-node { border: var(--border); background: var(--bg); padding: 12px 14px; text-align: center; }
+    .cycle-node b, .cycle-node span { display: block; }
+    .cycle-node b { font-size: 17px; }
+    .cycle-node span { margin-top: 4px; font-size: 13px; color: #555; line-height: 1.35; }
+
+    /* ========== 高级组件 / radial 中心放射：核心命题 + 多维支柱 ========== */
+    .layout-radial .radial-wrap {
+      position: relative; align-self: center; justify-self: center;
+      width: 900px; height: 380px;
+    }
+    .radial-center {
+      position: absolute; left: 345px; top: 140px; width: 210px; height: 100px;
+      border-radius: 50%; background: var(--ink); color: #fff; display: grid;
+      place-items: center; padding: 18px; text-align: center; font-size: 21px; font-weight: 900; z-index: 3;
+    }
+    .radial-arm {
+      position: absolute; height: 3px;
+      background: var(--navy); transform-origin: left center; transform: rotate(var(--a));
+    }
+    .radial-slot {
+      position: absolute; width: 210px; min-height: 84px;
+    }
+    .radial-node { border: var(--border); background: var(--bg); padding: 12px 14px; text-align: center; }
+    .radial-node.hot { background: var(--red); color: #fff; border-color: var(--red); }
+    .radial-node b, .radial-node span { display: block; }
+    .radial-node b { font-size: 17px; }
+    .radial-node span { margin-top: 4px; font-size: 13px; line-height: 1.35; }
+
+    /* ========== 高级组件 / pyramid 金字塔：基础到顶层的层级递进 ========== */
+    .layout-pyramid .pyramid-wrap {
+      align-self: center; justify-self: center; width: 920px; height: 430px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    }
+    .pyramid-layer {
+      width: var(--w); min-height: 70px; background: var(--navy); color: #fff;
+      clip-path: polygon(7% 0,93% 0,100% 100%,0 100%); padding: 12px 42px;
+      display: grid; grid-template-columns: 180px 1fr; align-items: center; gap: 18px;
+    }
+    .pyramid-layer.hot { background: var(--red); }
+    .pyramid-layer b { font-size: 18px; text-align: right; }
+    .pyramid-layer span { font-size: 14px; line-height: 1.4; }
+
+    /* ========== 高级组件 / hierarchy 层级树：根节点 + 分组 + 子项 ========== */
+    .layout-hierarchy .hierarchy-wrap {
+      position: relative; align-self: center; justify-self: center; width: 1020px; min-height: 420px;
+      display: grid; grid-template-rows: 90px 48px 1fr; justify-items: center;
+    }
+    .hierarchy-root {
+      min-width: 300px; background: var(--ink); color: #fff; padding: 20px 30px;
+      display: grid; place-items: center; font-size: 21px; font-weight: 900; text-align: center;
+    }
+    .hierarchy-links { position: relative; width: 100%; height: 48px; }
+    .hierarchy-stem { position: absolute; left: calc(50% - 2px); top: 0; width: 4px; height: 24px; background: var(--navy); }
+    .hierarchy-rail { position: absolute; top: 22px; height: 4px; background: var(--navy); }
+    .hierarchy-drop { position: absolute; top: 22px; width: 4px; height: 26px; background: var(--navy); transform: translateX(-2px); }
+    .hierarchy-groups { width: 100%; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+    .hierarchy-group { border: var(--border); background: var(--bg); padding: 14px; }
+    .hierarchy-group>b { display: block; background: var(--navy); color: #fff; padding: 10px; text-align: center; font-size: 16px; }
+    .hierarchy-group>div { display: grid; gap: 7px; margin-top: 10px; }
+    .hierarchy-group span { border: 1px solid #aeb2b7; padding: 9px; text-align: center; font-size: 13px; }
+
+    /* ========== 高级组件 / diagnostic-axis 坐标诊断：连续量级 + 目标区 ========== */
+    .layout-diagnostic-axis .diagnostic-wrap {
+      align-self: center; justify-self: center; width: 1020px; height: 440px;
+      display: grid; grid-template-columns: 92px 1fr; grid-template-rows: 1fr 58px;
+    }
+    .diagnostic-y-label {
+      writing-mode: vertical-rl; transform: rotate(180deg); display: grid; place-items: center;
+      font-size: 16px; font-weight: 900; gap: 10px;
+    }
+    .diagnostic-y-label small, .diagnostic-x-label small { font-size: 12px; font-weight: 500; color: var(--ink-2); }
+    .diagnostic-x-label {
+      grid-column: 2; display: flex; align-items: center; justify-content: center; gap: 16px;
+      font-size: 16px; font-weight: 900;
+    }
+    .diagnostic-plot { position: relative; margin: 14px 24px 0 0; background: #f4f4f2; overflow: visible; }
+    .diagnostic-x-axis { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--ink); }
+    .diagnostic-y-axis { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--ink); }
+    .diagnostic-target {
+      position: absolute; left: var(--x); bottom: var(--y); width: var(--w); height: var(--h);
+      border: 3px solid var(--red); background: rgba(216,64,44,.08); display: grid; place-items: start end;
+      padding: 8px;
+    }
+    .diagnostic-target span { background: var(--red); color: #fff; padding: 5px 8px; font-size: 12px; font-weight: 900; }
+    .diagnostic-point {
+      position: absolute; left: var(--x); bottom: var(--y); width: 18px; height: 18px;
+      border-radius: 50%; background: var(--navy); transform: translate(-9px,9px);
+    }
+    .diagnostic-point.hot { background: var(--red); width: 22px; height: 22px; transform: translate(-11px,11px); }
+    .diagnostic-point span {
+      position: absolute; left: 15px; bottom: 15px; white-space: nowrap;
+      background: var(--bg); border: 1px solid #aeb2b7; padding: 4px 7px; font-size: 12px; font-weight: 800;
+    }
+
+    /* ========== 高级组件 / system-map 系统图：输入、边界、模块与输出 ========== */
+    .layout-system-map .system-map-wrap {
+      position: relative; align-self: center; justify-self: center; width: 1040px; min-height: 410px;
+      display: grid; grid-template-columns: 190px 76px 1fr 76px 190px; align-items: center;
+      border: 2px solid var(--ink); padding: 44px 24px 24px;
+    }
+    .system-boundary-label {
+      position: absolute; left: 18px; top: 12px; font-size: 13px; font-weight: 900;
+      color: var(--red); background: var(--bg); padding: 0 8px;
+    }
+    .system-column { display: grid; gap: 13px; align-content: center; }
+    .system-label { font-size: 12px; font-weight: 900; color: var(--ink-2); text-align: center; }
+    .system-node { border: var(--border); padding: 14px 10px; text-align: center; font-size: 14px; font-weight: 800; background: var(--bg); }
+    .system-links { height: 4px; background: var(--navy); }
+    .system-core { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+    .system-module { min-height: 112px; border: var(--border); padding: 18px; background: var(--bg); }
+    .system-module.hot { border-color: var(--red); border-width: 4px; }
+    .system-module b, .system-module span { display: block; }
+    .system-module b { font-size: 17px; }
+    .system-module span { margin-top: 8px; font-size: 13px; line-height: 1.45; color: var(--ink-2); }
+
+    /* ========== 高级组件 / spectrum 连续光谱：两端含义 + 当前点 + 目标区 ========== */
+    .layout-spectrum .spectrum-wrap {
+      align-self: center; justify-self: center; width: 1020px; min-height: 360px;
+      display: grid; align-content: center; gap: 34px;
+    }
+    .spectrum-ends { display: flex; justify-content: space-between; font-size: 22px; }
+    .spectrum-ends b:last-child { color: var(--red); }
+    .spectrum-scale { position: relative; height: 170px; margin: 0 24px; }
+    .spectrum-line { position: absolute; left: 0; right: 0; top: 58px; height: 10px; background: var(--navy); }
+    .spectrum-target {
+      position: absolute; left: var(--x); top: 42px; width: var(--w); height: 42px;
+      background: rgba(216,64,44,.14); border: 2px solid var(--red);
+    }
+    .spectrum-target span {
+      position: absolute; left: 50%; bottom: 48px; transform: translateX(-50%);
+      white-space: nowrap; color: var(--red); font-size: 13px; font-weight: 900;
+    }
+    .spectrum-marker {
+      position: absolute; left: var(--x); top: 18px; width: 4px; height: 102px;
+      background: var(--ink); transform: translateX(-2px); z-index: 2;
+    }
+    .spectrum-marker b, .spectrum-marker span {
+      position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap;
+      background: var(--ink); color: #fff; padding: 5px 8px; font-size: 12px;
+    }
+    .spectrum-marker b { bottom: 108px; font-size: 14px; }
+    .spectrum-marker span { top: 108px; background: var(--bg); color: var(--ink); border: 1px solid #aeb2b7; }
+    .spectrum-stops { position: absolute; left: 0; right: 0; top: 94px; }
+    .spectrum-stops span {
+      position: absolute; transform: translateX(-50%); white-space: nowrap;
+      font-size: 12px; font-weight: 700; color: var(--ink-2);
+    }
+    .spectrum-stops span:first-child { transform: none; }
+    .spectrum-stops span:last-child { transform: translateX(-100%); }
+
     /* ========== 版式 8 / quote 结论框：黑框 + 巨型引号 ========== */
     .layout-quote { grid-template-rows: 1fr auto; }
     .layout-quote .box {

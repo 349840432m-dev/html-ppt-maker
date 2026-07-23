@@ -1,0 +1,116 @@
+{
+  "title": "从问题诊断到系统边界",
+  "audience": "产品、运营与 AI 工具团队",
+  "scenario": "15 分钟策略汇报",
+  "goal": "用诊断坐标、系统图和连续光谱说明优先级、系统边界与自动化程度",
+  "style_confirmation": {
+    "status": "confirmed",
+    "selected_style": "NotebookLM 信息图风",
+    "selected_template": "swiss-editorial",
+    "secondary_template": null,
+    "output_mode": "演示件",
+    "ppt_strategy": "HTML-matched"
+  },
+  "design_read": "高密度策略汇报，用确定性关系图替代卡片堆叠，朱红只承担唯一决策重点。",
+  "visual_system": {
+    "style": "NotebookLM 信息图风",
+    "template_signatures": ["12列网格", "超大无衬线标题", "发丝分割线"],
+    "preset": "notebooklm",
+    "DESIGN_VARIANCE": 6,
+    "MOTION_INTENSITY": 2,
+    "VISUAL_DENSITY": 7
+  },
+  "slides": [
+    {
+      "id": "diagnostic-01",
+      "type": "framework",
+      "layout_family": "diagnostic-axis",
+      "title": "先解决高影响且证据充分的问题",
+      "takeaway": "首次成功同时具备高影响和高证据，应当成为当前优先项。",
+      "body": ["首次成功", "模板发现", "导出配置", "协作反馈"],
+      "visual": "影响与证据双轴、目标区和四个问题点位",
+      "animation": "轴线和目标区先出现，四个点位依次进入",
+      "transition": "fade",
+      "speaker_notes": "强调坐标来自同一尺度，目标区不是装饰象限。",
+      "render_track": "engine",
+      "data": {
+        "x_axis": {"label": "证据强度", "min": 0, "max": 100},
+        "y_axis": {"label": "业务影响", "min": 0, "max": 100},
+        "target": {"label": "立即解决", "x_min": 65, "x_max": 95, "y_min": 65, "y_max": 95},
+        "points": [
+          {"label": "导出配置", "x": 24, "y": 31},
+          {"label": "协作反馈", "x": 42, "y": 54},
+          {"label": "模板发现", "x": 61, "y": 58},
+          {"label": "首次成功", "x": 82, "y": 84, "hot": true}
+        ],
+        "tab": "问题诊断"
+      },
+      "layout_intent": "用两个连续变量和目标区表达问题优先级，而不是把问题退化成无尺度列表。",
+      "first_visual_anchor": "右上目标区中的首次成功点位。",
+      "visual_translation": {"object": "diagnostic-axis", "components": ["双轴", "目标区", "四个点位"], "layout": "two-axis diagnostic plot"},
+      "element_budget": {"main_structure": ["diagnostic-axis"], "supporting_elements": ["connector", "label"], "rhythm_element": ["target-zone"], "decorative_elements": []},
+      "design_contract": {"hierarchy": "标题 40px、目标区 18px、点位标签 14px。", "whitespace_intent": "坐标四周保留标签安全区，点位不贴舞台边缘。", "alignment_contract": "轴线、目标区与点位共享同一绘图区。", "color_emphasis": "朱红只强调首次成功点位与目标区。", "single_claim": "首次成功是当前最高优先级问题。"},
+      "aesthetic_risk": "轴线无尺度、标签贴边或多个点同时抢夺强调色。",
+      "pass_criteria": "双轴、目标区和唯一重点在缩略图中清晰，所有点位位于内侧安全区。"
+    },
+    {
+      "id": "system-01",
+      "type": "architecture",
+      "layout_family": "system-map",
+      "title": "稳定交付需要一条有边界的系统链路",
+      "takeaway": "输入经过编排、执行与验证后，才能成为可追踪结果。",
+      "body": ["用户意图", "官方来源", "任务编排", "受控执行", "结果验证", "网页与报告"],
+      "visual": "输入、三个核心模块、输出与系统边界",
+      "animation": "输入先出现，核心模块依次进入，输出最后出现",
+      "transition": "fade",
+      "speaker_notes": "系统图只表现一条主要流向，不混入组织层级。",
+      "render_track": "engine",
+      "data": {
+        "boundary": "AI 更新追踪系统",
+        "inputs": ["用户意图", "官方来源"],
+        "modules": [
+          {"title": "编排", "detail": "计划与来源路由"},
+          {"title": "执行", "detail": "抓取与结构化"},
+          {"title": "验证", "detail": "证据、去重与回滚", "hot": true}
+        ],
+        "outputs": ["更新网页", "审计报告"],
+        "tab": "系统边界"
+      },
+      "layout_intent": "用输入、核心模块、输出和边界说明系统如何把来源转成可验证交付物。",
+      "first_visual_anchor": "系统边界中的验证模块。",
+      "visual_translation": {"object": "system-map", "components": ["输入列", "三个核心模块", "输出列", "系统边界"], "layout": "left-to-right bounded system"},
+      "element_budget": {"main_structure": ["system-map"], "supporting_elements": ["connector", "boundary-label"], "rhythm_element": ["module-band"], "decorative_elements": []},
+      "design_contract": {"hierarchy": "标题 40px、模块标题 18px、模块说明 14px。", "whitespace_intent": "输入、核心和输出之间保留独立线路层。", "alignment_contract": "三列沿同一水平中线排列，模块在核心区垂直对齐。", "color_emphasis": "朱红只强调验证模块。", "single_claim": "可靠结果来自有边界的输入、执行和验证链路。"},
+      "aesthetic_risk": "系统图退化成组织树，或连接线穿过模块文字。",
+      "pass_criteria": "输入、核心、输出与唯一重点一次可读，连接线独立且不穿字。"
+    },
+    {
+      "id": "spectrum-01",
+      "type": "framework",
+      "layout_family": "spectrum",
+      "title": "自动化不是开关，而是一段可控区间",
+      "takeaway": "可撤回、关键动作需确认的代办模式是当前推荐位置。",
+      "body": ["人工确认", "智能辅助", "受控代办", "自主执行"],
+      "visual": "从人工判断到自主执行的连续光谱、目标区与当前标记",
+      "animation": "基线与停止点出现，目标区和当前位置最后进入",
+      "transition": "fade",
+      "speaker_notes": "两端互斥，当前标记位于推荐目标区内。",
+      "render_track": "engine",
+      "data": {
+        "left_label": "人工判断",
+        "right_label": "自主执行",
+        "stops": ["确认", "辅助", "代办", "自治"],
+        "marker": {"label": "受控代办", "detail": "可撤回，关键动作需确认", "position_pct": 66},
+        "target": {"label": "当前推荐区", "start_pct": 52, "end_pct": 78},
+        "tab": "自动化边界"
+      },
+      "layout_intent": "用连续区间而不是离散开关表达自动化程度与推荐边界。",
+      "first_visual_anchor": "推荐区中的受控代办标记。",
+      "visual_translation": {"object": "spectrum", "components": ["两端语义", "四个停止点", "目标区", "当前位置"], "layout": "horizontal control spectrum"},
+      "element_budget": {"main_structure": ["spectrum"], "supporting_elements": ["connector", "label"], "rhythm_element": ["range-band"], "decorative_elements": []},
+      "design_contract": {"hierarchy": "标题 40px、当前位置 20px、停止点 14px。", "whitespace_intent": "光谱两端留出标签安全区，当前位置说明向内展开。", "alignment_contract": "停止点、目标区和 marker 共享同一水平基线。", "color_emphasis": "朱红只用于当前 marker 和推荐区边界。", "single_claim": "受控代办是当前合适的自动化程度。"},
+      "aesthetic_risk": "两端含义不互斥，或 marker 靠边导致标签溢出。",
+      "pass_criteria": "两端、目标区、停止点与当前位置清晰，所有标签保持在舞台内。"
+    }
+  ]
+}

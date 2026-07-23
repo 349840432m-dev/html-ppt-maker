@@ -14,7 +14,8 @@
   "design_read": "读作：内部方案汇报面向内容团队负责人和运营同事，讲完希望确认工作流升级方向，用克制、可追踪的语言，选科技商务风 + 阅读件。",
   "visual_system": {
     "style": "克制科技商务风",
-    "template_signatures": ["严格网格", "发丝分割线", "单一强调色"],
+    "template_signatures": ["12列网格", "超大无衬线标题", "发丝分割线"],
+    "preset": "editorial",
     "DESIGN_VARIANCE": 5,
     "MOTION_INTENSITY": 4,
     "VISUAL_DENSITY": 7
@@ -62,6 +63,13 @@
           "oversized-type"
         ],
         "decorative_elements": []
+      },
+      "design_contract": {
+        "hierarchy": "封面标题 64px、主张 24px、证据脚注 13px，形成三级层级。",
+        "whitespace_intent": "标题右侧留白用于聚焦主张并容纳后续主题视觉。",
+        "alignment_contract": "标题、主张与证据脚注落在同一左侧网格线。",
+        "color_emphasis": "唯一强调色只标工作流升级这一核心动作。",
+        "single_claim": "AI 内容生产需要从单点提效升级为可追踪流水线。"
       },
       "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
       "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
@@ -111,6 +119,13 @@
           "contrast-band"
         ],
         "decorative_elements": []
+      },
+      "design_contract": {
+        "hierarchy": "判断标题 44px、四步流程 22px、机制说明 14px。",
+        "whitespace_intent": "流程节点之间的空白用于表现顺序和回流关系。",
+        "alignment_contract": "四个流程节点共享水平中线，来源行固定对齐页脚。",
+        "color_emphasis": "强调色只用于闭环回流箭头。",
+        "single_claim": "选题、写作、配图和复盘必须共享同一套上下文。"
       },
       "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
       "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"

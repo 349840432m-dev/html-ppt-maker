@@ -1,0 +1,144 @@
+{
+  "title": "从一次性交付到持续增长系统",
+  "audience": "产品、运营与 AI 工具团队",
+  "scenario": "20 分钟策略汇报",
+  "goal": "用四种新增关系版式说明闭环、支柱、层级与组织责任",
+  "style_confirmation": {
+    "status": "confirmed",
+    "selected_style": "NotebookLM 信息图风",
+    "selected_template": "swiss-editorial",
+    "secondary_template": null,
+    "output_mode": "演示件",
+    "ppt_strategy": "HTML-matched"
+  },
+  "design_read": "高密度策略汇报，以明确关系图替代卡片堆叠，并用朱红只强调一个关键节点。",
+  "visual_system": {
+    "style": "NotebookLM 信息图风",
+    "template_signatures": ["12列网格", "超大无衬线标题", "发丝分割线"],
+    "preset": "notebooklm",
+    "DESIGN_VARIANCE": 6,
+    "MOTION_INTENSITY": 2,
+    "VISUAL_DENSITY": 7
+  },
+  "slides": [
+    {
+      "id": "cycle-01",
+      "type": "framework",
+      "layout_family": "cycle",
+      "title": "增长不是一次活动，而是一条持续回路",
+      "takeaway": "每轮反馈都必须进入下一轮产品动作。",
+      "body": ["观察真实行为", "形成可验证假设", "上线最小改动", "把结果写回系统"],
+      "visual": "中心目标与四阶段循环",
+      "animation": "中心先出现，四个阶段顺时针进入",
+      "transition": "fade",
+      "speaker_notes": "强调回路的终点必须连接下一轮输入。",
+      "render_track": "engine",
+      "data": {
+        "center": "持续增长回路",
+        "items": [
+          {"title": "观察", "detail": "真实行为"},
+          {"title": "判断", "detail": "可验证假设"},
+          {"title": "行动", "detail": "最小改动"},
+          {"title": "回流", "detail": "结果写回"}
+        ],
+        "tab": "闭环"
+      },
+      "layout_intent": "用闭合关系而不是线性步骤表达反馈必须回到下一轮输入。",
+      "first_visual_anchor": "中心的持续增长回路与四阶段闭环。",
+      "visual_translation": {"object": "cycle", "components": ["中心目标", "四个阶段节点", "闭合线路"], "layout": "centered four-stage loop"},
+      "element_budget": {"main_structure": ["cycle"], "supporting_elements": ["connector", "label"], "rhythm_element": ["contrast-band"], "decorative_elements": []},
+      "design_contract": {"hierarchy": "标题 40px、中心目标 20px、阶段标题 17px。", "whitespace_intent": "中心与外围节点之间保留专用线路轨道。", "alignment_contract": "四个主节点沿水平和垂直中轴对齐。", "color_emphasis": "朱红只标闭环回流的下边线路。", "single_claim": "增长结果必须回流为下一轮输入。"},
+      "aesthetic_risk": "循环被误读为普通四卡，或线路穿过中心文字。",
+      "pass_criteria": "四个阶段、中心目标和闭合关系在缩略图中可一次读出。"
+    },
+    {
+      "id": "radial-01",
+      "type": "framework",
+      "layout_family": "radial",
+      "title": "一个稳定系统，需要五根共同支柱",
+      "takeaway": "能力、数据、流程、治理和体验必须围绕同一结果。",
+      "body": ["能力", "数据", "流程", "治理", "体验"],
+      "visual": "中心命题与五个放射支柱",
+      "animation": "中心出现后支柱逐项展开",
+      "transition": "fade",
+      "speaker_notes": "红色只用于当前最大缺口：治理。",
+      "render_track": "engine",
+      "data": {
+        "center": "稳定交付",
+        "spokes": [
+          {"title": "能力", "detail": "模型与工具"},
+          {"title": "数据", "detail": "输入与反馈"},
+          {"title": "流程", "detail": "编排与复核"},
+          {"title": "治理", "detail": "权限与审计", "hot": true},
+          {"title": "体验", "detail": "用户可理解"}
+        ],
+        "tab": "支柱"
+      },
+      "layout_intent": "用中心放射关系表达五个支柱共同服务同一结果。",
+      "first_visual_anchor": "稳定交付中心节点与五根放射支柱。",
+      "visual_translation": {"object": "radial", "components": ["中心命题", "五个支柱", "放射连线"], "layout": "elliptical hub-and-spoke"},
+      "element_budget": {"main_structure": ["radial"], "supporting_elements": ["connector", "label"], "rhythm_element": ["spotlight"], "decorative_elements": []},
+      "design_contract": {"hierarchy": "标题 40px、中心命题 21px、支柱标题 17px。", "whitespace_intent": "外围节点与中心之间留出互不穿字的短线路。", "alignment_contract": "节点沿椭圆轨道均匀分布，文字保持水平。", "color_emphasis": "朱红只强调治理这一最大缺口。", "single_claim": "五个支柱必须围绕稳定交付共同成立。"},
+      "aesthetic_risk": "支柱与标题争抢空间，或射线压住节点文字。",
+      "pass_criteria": "中心、五个分支和唯一红色重点均清晰，无溢出和穿字。"
+    },
+    {
+      "id": "pyramid-01",
+      "type": "framework",
+      "layout_family": "pyramid",
+      "title": "越靠近顶层，价值越依赖底层可靠性",
+      "takeaway": "没有数据与流程基础，智能决策只是偶然。",
+      "body": ["智能决策", "自动执行", "工作流编排", "可信数据"],
+      "visual": "四层价值金字塔",
+      "animation": "从底层到顶层逐层揭示",
+      "transition": "fade",
+      "speaker_notes": "先讲底层可靠，再讲顶层价值。",
+      "render_track": "engine",
+      "data": {
+        "layers": [
+          {"title": "智能决策", "detail": "建议与预测", "hot": true},
+          {"title": "自动执行", "detail": "动作与协作"},
+          {"title": "工作流编排", "detail": "规则、状态与回退"},
+          {"title": "可信数据", "detail": "来源、口径与权限"}
+        ],
+        "tab": "价值层级"
+      },
+      "layout_intent": "用窄顶宽底的层级结构说明上层价值依赖下层可靠性。",
+      "first_visual_anchor": "由可信数据托起智能决策的四层金字塔。",
+      "visual_translation": {"object": "pyramid", "components": ["顶层价值", "中间能力", "底层基础"], "layout": "four-level centered pyramid"},
+      "element_budget": {"main_structure": ["pyramid"], "supporting_elements": ["label"], "rhythm_element": ["contrast-band"], "decorative_elements": []},
+      "design_contract": {"hierarchy": "标题 40px、层标题 18px、层说明 14px。", "whitespace_intent": "金字塔两侧留白用于突出稳定的中轴。", "alignment_contract": "四层沿页面中轴居中，宽度自上而下递增。", "color_emphasis": "朱红只强调智能决策顶层。", "single_claim": "高层智能价值依赖底层数据和流程。"},
+      "aesthetic_risk": "层级顺序颠倒，或面积被误读为精确数量。",
+      "pass_criteria": "四层顺序、依赖方向和唯一强调层在缩略图中明确。"
+    },
+    {
+      "id": "hierarchy-01",
+      "type": "architecture",
+      "layout_family": "hierarchy",
+      "title": "把一个目标拆成三组可负责的系统",
+      "takeaway": "组织结构必须能映射到真实的交付责任。",
+      "body": ["洞察系统", "决策系统", "执行系统"],
+      "visual": "根目标、三组系统与子能力层级树",
+      "animation": "根目标出现后按组揭示",
+      "transition": "fade",
+      "speaker_notes": "每个子项都对应一个可验收责任。",
+      "render_track": "engine",
+      "data": {
+        "root": "可持续增长目标",
+        "groups": [
+          {"title": "洞察系统", "children": ["行为数据", "用户研究", "问题定义"]},
+          {"title": "决策系统", "children": ["优先级", "实验设计", "风险评估"]},
+          {"title": "执行系统", "children": ["工作流", "自动化", "复盘记录"]}
+        ],
+        "tab": "组织层级"
+      },
+      "layout_intent": "用一根目标、三组责任和九个子项表达可验收的组织分解。",
+      "first_visual_anchor": "可持续增长目标根节点与三组系统。",
+      "visual_translation": {"object": "hierarchy", "components": ["根目标", "三组系统", "九个子能力"], "layout": "root-to-three-groups hierarchy"},
+      "element_budget": {"main_structure": ["hierarchy"], "supporting_elements": ["connector", "label"], "rhythm_element": ["dark-break"], "decorative_elements": []},
+      "design_contract": {"hierarchy": "标题 40px、根节点 21px、分组标题 16px。", "whitespace_intent": "根节点和分组之间保留 48px 专用线路层。", "alignment_contract": "根节点居中，三组等宽对齐，子项在组内垂直排列。", "color_emphasis": "藏蓝用于责任组，不追加多余强调色。", "single_claim": "组织结构必须对应可验收的交付责任。"},
+      "aesthetic_risk": "层级图退化成三张普通卡片，或横轨穿过文字。",
+      "pass_criteria": "根、组、子项三级关系清晰，横轨独立且无穿字。"
+    }
+  ]
+}

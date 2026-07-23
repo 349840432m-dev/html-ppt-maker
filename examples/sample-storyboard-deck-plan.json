@@ -6,7 +6,7 @@
   "style_confirmation": {
     "status": "confirmed",
     "selected_style": "NotebookLM 信息图风",
-    "selected_template": "notebooklm-infographic",
+    "selected_template": "swiss-editorial",
     "secondary_template": null,
     "output_mode": "演示件",
     "ppt_strategy": "HTML-matched storyboard"
@@ -17,8 +17,9 @@
     "DESIGN_VARIANCE": 6,
     "MOTION_INTENSITY": 5,
     "VISUAL_DENSITY": 6,
-    "style": "NotebookLM 信息图风"
-    ,"template_signatures": ["上下黑色压边条", "图表占画布主体", "每页一个朱红重点"]
+    "style": "NotebookLM 信息图风",
+    "preset": "notebooklm",
+    "template_signatures": ["12列网格", "超大无衬线标题", "发丝分割线"]
   },
   "slides": [
     {
@@ -48,6 +49,13 @@
         "supporting_elements": ["annotation"],
         "rhythm_element": ["oversized-type"],
         "decorative_elements": []
+      },
+      "design_contract": {
+        "hierarchy": "封面标题 64px、核心判断 24px、课程信息 13px。",
+        "whitespace_intent": "右侧留白承担封面视觉停顿，不堆放说明文字。",
+        "alignment_contract": "标题和核心判断对齐左侧主网格。",
+        "color_emphasis": "朱红只强调确定感，不同时强调现金。",
+        "single_claim": "付费问卷的激励不只有现金，确定感同样重要。"
       },
       "aesthetic_risk": "封面退成通用课程标题页。",
       "pass_criteria": "主张清晰，路径可见，缩略图中标题可读。",
@@ -85,6 +93,13 @@
         "supporting_elements": ["connector", "label"],
         "rhythm_element": ["contrast-band"],
         "decorative_elements": []
+      },
+      "design_contract": {
+        "hierarchy": "问题标题 42px、条件节点 20px、最终动作 16px。",
+        "whitespace_intent": "分支间留白用于识别选择路径和汇合点。",
+        "alignment_contract": "起点、分支与结果沿同一纵向中心线展开。",
+        "color_emphasis": "朱红只标最终建议节点。",
+        "single_claim": "先判断任务价值，再决定是否使用付费激励。"
       },
       "aesthetic_risk": "分叉只是文字列表，没有方向和收束。",
       "pass_criteria": "起点、条件与最终动作一眼可追踪。",

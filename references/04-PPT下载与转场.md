@@ -6,13 +6,30 @@
 
 ## 生成策略
 
+先在 deck 输出目录设置：
+
+```bash
+SKILL_DIR="${CODEX_HOME:-$HOME/.codex}/skills/html-ppt-maker"
+RUN="$SKILL_DIR/scripts/run_tool.sh"
+```
+
 优先顺序：
+
+导出既有 HTML 时先验证兼容性最小契约，不要求旧稿补齐新版设计字段：
+
+```bash
+"$RUN" "$SKILL_DIR/scripts/validate_export_plan.py" deck-plan.json
+```
+
+若该原稿本来就遵循当前 skill schema，再追加完整的 `validate_deck_plan.py`、审美和 DOM 契约审计；否则这些规划期检查记为 `not_applicable`，但运行时布局、contact sheet、导出和一致性验证仍是必需项。不要为了通过新版 schema 改写用户的既有源文件。
 
 1. 默认生成 HTML-matched 观看版：
 
 ```bash
-node scripts/export_html_matched_pptx.mjs index.html deck-html-matched-with-transitions.pptx \
+"$RUN" "$SKILL_DIR/scripts/export_html_matched_pptx.mjs" index.html deck-html-matched-with-transitions.pptx \
   --plan deck-plan.json
+"$RUN" "$SKILL_DIR/scripts/verify_html_matched_export.py" deck-html-matched-with-transitions-export.json \
+  --out html-matched-verification.json
 ```
 
 该脚本使用 Playwright 截取 HTML 最终状态，用 PptxGenJS 生成全页图片 PPTX，再调用 `apply_ppt_transitions.py` 注入转场，并输出 `*-export.json`。
@@ -20,19 +37,21 @@ node scripts/export_html_matched_pptx.mjs index.html deck-html-matched-with-tran
 2. 需要分镜节奏时追加：
 
 ```bash
-node scripts/export_html_matched_pptx.mjs index.html deck-html-matched-with-transitions.pptx \
+"$RUN" "$SKILL_DIR/scripts/export_html_matched_pptx.mjs" index.html deck-html-matched-with-transitions.pptx \
   --plan deck-plan.json --storyboard-plan storyboard-plan.json
+"$RUN" "$SKILL_DIR/scripts/verify_html_matched_export.py" deck-html-matched-with-transitions-export.json \
+  --out html-matched-verification.json
 ```
 
 3. 只有用户明确要求 PPT 内文本可编辑时，才运行：
 
 ```bash
-python3 scripts/generate_pptx_from_plan.py deck-plan.json deck-editable.pptx
+"$RUN" "$SKILL_DIR/scripts/generate_pptx_from_plan.py" deck-plan.json deck-editable.pptx
 ```
 
 这是简化降级版，不能标为 HTML-matched，也不能使用 storyboard-plan。
 
-4. 缺少 Node 依赖时，优先加载 Codex Desktop bundled workspace dependencies；其他环境安装 `playwright sharp pptxgenjs`。仍不可用时保留 HTML 和错误日志，不要悄悄退回简化 PPT。
+4. 缺少依赖时按 `05-验收清单.md` 使用 `run_tool.sh` 或在 deck 的 `.runtime/` 安装固定版本。仍不可用时保留 HTML 和错误日志，不要污染 skill 目录，也不要悄悄退回简化 PPT。
 
 不要在未说明的情况下安装系统级依赖。
 
@@ -61,14 +80,16 @@ python3 scripts/generate_pptx_from_plan.py deck-plan.json deck-editable.pptx
 如果已有 `.pptx` 文件，可使用：
 
 ```bash
-python3 scripts/apply_ppt_transitions.py deck.pptx --plan deck-plan.json --output deck-with-transitions.pptx
+"$RUN" "$SKILL_DIR/scripts/apply_ppt_transitions.py" deck.pptx --plan deck-plan.json --output deck-with-transitions.pptx
 ```
 
 检查转场：
 
 ```bash
-python3 scripts/apply_ppt_transitions.py --check deck-with-transitions.pptx
+"$RUN" "$SKILL_DIR/scripts/apply_ppt_transitions.py" --check deck-with-transitions.pptx
 ```
+
+只有导出 manifest 的 `transitions` 为 `applied` 时，`--check` 才是必需硬检查。若为 `degraded-no-transitions` 或显式 `--no-transitions` 产生的 `not-applied`，保留已通过一致性验证的无转场 PPT，跳过硬检查并在验收记录标记 `degraded`。
 
 脚本只处理基础转场 XML，不负责生成页面内容。若 PowerPoint 或 Keynote 对某种转场兼容性不同，以实际打开检查为准。
 
@@ -77,7 +98,7 @@ python3 scripts/apply_ppt_transitions.py --check deck-with-transitions.pptx
 关键 HTML reveal 页不要只导出最终态。先按 `12-分镜式PPT导出.md` 在 `deck-plan.json` 中补 `storyboard_states`，再运行：
 
 ```bash
-python3 scripts/expand_storyboard_plan.py deck-plan.json storyboard-plan.json
+"$RUN" "$SKILL_DIR/scripts/expand_storyboard_plan.py" deck-plan.json storyboard-plan.json
 ```
 
 生成 PPT 时把 `storyboard-plan.json` 交给 `export_html_matched_pptx.mjs`。脚本按 `visible_steps` 控制 HTML 后逐状态截图；不能把展开 plan 交给可编辑简化脚手架。
@@ -98,6 +119,7 @@ python3 scripts/expand_storyboard_plan.py deck-plan.json storyboard-plan.json
 - `.pptx` 文件存在且非空。
 - 非分镜模式页数和 HTML 一致；分镜模式页数和 `storyboard-plan.json` 一致。
 - 每页有标题或视觉主元素。
-- 转场检查能发现基础 transition 标签。
+- manifest 为 `applied` 时，转场检查能发现基础 transition 标签；降级或显式无转场时已记录影响。
 - 降级项已经写进验收记录。
 - `*-export.json` 中截图数、导出页数和 transition 状态正确。
+- `verify_html_matched_export.py` 通过并生成验证报告：截图尺寸与哈希、每页关系文件引用的对应图片、无裁切/旋转/翻转、单张全画布图片的几何位置、画布比例和分镜差异均一致。

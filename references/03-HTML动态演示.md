@@ -17,7 +17,7 @@
 
 先服从 Phase 0 已确认风格，再选择管线：
 
-- **NotebookLM 引擎轨道（标准页）**：bars、funnel、gantt、checklist、waterfall、stack、decision-tree、causal-chain、matrix、journey、before-after、blueprint。填 `render_track: "engine"` 和 `data` 槽位，然后运行 `python3 scripts/render_deck.py deck-plan.json index.html --preset notebooklm`。**不要手写引擎轨道页。**
+- **NotebookLM 引擎轨道（标准页）**：bars、funnel、gantt、checklist、waterfall、stack、decision-tree、causal-chain、matrix、journey、before-after、blueprint、cycle、radial、pyramid、hierarchy、diagnostic-axis、system-map、spectrum。填 `render_track: "engine"` 和 `data` 槽位，然后通过 `scripts/run_tool.sh` 调用 `render_deck.py deck-plan.json index.html --preset notebooklm`。**不要手写引擎轨道页。**
 - **手写轨道（锚点页）**：hero、quote、end、section、视觉隐喻页标 `render_track: "hand"`。引擎输出带 `HAND-TRACK` 注释的起点存根，在存根上手工完成设计——这是发挥创造力的地方，但交付前必须对全部页面执行 `scripts/layout_probe.js` 运行时审计（溢出/裁切/重叠清零），并删除 `HAND-TRACK` 注释。
 - **编辑部纸感 hand 轨道**：当前引擎没有编辑部版式 CSS。选择编辑部风时直接以 `index.html` 为起点手工实现页面；引擎支持语义若走 hand，写明 `hand_reason`。不要使用 `render_deck.py --template index.html` 组装引擎页。
 
@@ -26,7 +26,7 @@
 **必须复制 `assets/html-deck-template/` 下的一个模板作为起点**，不要从空白 HTML 重新发明：
 
 - `index.html`：编辑部纸感风（默认）。衬线标题、米白纸底、深绿强调，10 类版式。
-- `notebooklm.html`：NotebookLM 信息图风。纯白底、上下黑色压边条、超粗黑体标题、黑/藏蓝/朱红三色、2px 黑边线框，每页一个大图表（层级堆叠、条形图、瀑布图、甘特表、勾选清单），并含全部六个高级公开课组件（decision-tree、funnel、causal-chain、matrix、journey、before-after）。用户要"NotebookLM 风""信息图风""图表型"时用它。它的核心气质是"每页都是一张信息图"：标题给判断，图表给证据，红色只用于最关键的一个信息。
+- `notebooklm.html`：NotebookLM 信息图风。纯白底、上下黑色压边条、超粗黑体标题、黑/藏蓝/朱红三色、2px 黑边线框，每页一个大图表，并含决策、漏斗、因果、矩阵、旅程、对照、循环、放射、金字塔和层级等高级组件。用户要"NotebookLM 风""信息图风""图表型"时用它。它的核心气质是"每页都是一张信息图"：标题给判断，图表给证据，红色只用于最关键的一个信息。
 
 复制模板后必须做减法：删除叙事用不到的 `<section>` 及其专属 CSS 块，避免成品带着无关版式和死代码交付。完成后的样子参考金标准示例 `examples/reference-deck-notebooklm/`。
 

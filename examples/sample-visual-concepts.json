@@ -16,7 +16,7 @@
     {
       "asset_id": "section-visual-01",
       "slides": [
-        "s04"
+        "s01"
       ],
       "role": "section",
       "status": "prompt_ready",
@@ -28,8 +28,7 @@
     {
       "asset_id": "section-visual-02",
       "slides": [
-        "s18",
-        "s26"
+        "s02"
       ],
       "role": "section",
       "status": "prompt_ready",
@@ -41,8 +40,7 @@
     {
       "asset_id": "concept-framework-01",
       "slides": [
-        "s05",
-        "s32"
+        "s02"
       ],
       "role": "concept",
       "status": "editable_graphic",

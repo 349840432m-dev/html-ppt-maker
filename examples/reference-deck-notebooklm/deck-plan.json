@@ -6,7 +6,7 @@
   "style_confirmation": {
     "status": "confirmed",
     "selected_style": "NotebookLM 信息图风",
-    "selected_template": "notebooklm-infographic",
+    "selected_template": "swiss-editorial",
     "secondary_template": null,
     "output_mode": "演示件",
     "ppt_strategy": "HTML-matched"
@@ -14,7 +14,7 @@
   "design_read": "读作：公开课面向产研与增长同学，讲完希望他们改掉抽奖式激励，用直接、有数据感的语言，选 NotebookLM 信息图风 + 演示件",
   "visual_system": {
     "style": "NotebookLM 信息图风",
-    "template_signatures": ["上下黑色压边条", "图表占画布主体", "每页一个朱红重点"],
+    "template_signatures": ["12列网格", "超大无衬线标题", "发丝分割线"],
     "preset": "notebooklm",
     "DESIGN_VARIANCE": 4,
     "MOTION_INTENSITY": 5,
@@ -81,6 +81,13 @@
           "oversized-type"
         ],
         "decorative_elements": []
+      },
+      "design_contract": {
+        "hierarchy": "封面判断 64px、课程说明 24px、示例声明 13px。",
+        "whitespace_intent": "标题右侧留白用于制造开场停顿并隔离证据脚注。",
+        "alignment_contract": "标题、课程说明和页脚沿同一左侧网格线。",
+        "color_emphasis": "朱红只强调确定感。",
+        "single_claim": "确定兑现比奖励金额更影响用户完成问卷。"
       },
       "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
       "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
@@ -162,6 +169,13 @@
         ],
         "decorative_elements": []
       },
+      "design_contract": {
+        "hierarchy": "结论标题 42px、条形数值 22px、数据来源 13px。",
+        "whitespace_intent": "条形之间留白用于比较量级，不放额外卡片。",
+        "alignment_contract": "条形标签、起点和数值分别对齐三条固定网格线。",
+        "color_emphasis": "朱红只标确定发放这一条。",
+        "single_claim": "预算接近时，确定发放的完成率明显高于抽奖。"
+      },
       "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
       "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
     },
@@ -184,6 +198,26 @@
       "animation": "起点、条件层、结论按三步展开，侧轨线随第二步生长",
       "transition": "fade",
       "speaker_notes": "PPT 导出时按三个状态拆页。",
+      "storyboard_states": [
+        {
+          "suffix": "a",
+          "label": "只显示起点问题",
+          "include_steps": [0],
+          "speaker_note": "先让听众判断问卷是否能换来高价值决策。"
+        },
+        {
+          "suffix": "b",
+          "label": "显示条件分支",
+          "include_steps": [0, 1, 2],
+          "speaker_note": "展开用户投入、决策价值和样本条件。"
+        },
+        {
+          "suffix": "c",
+          "label": "显示最终建议",
+          "include_steps": [0, 1, 2, 3],
+          "speaker_note": "收束到付费答卷设计动作。"
+        }
+      ],
       "render_track": "engine",
       "data": {
         "start": "这个问卷是否能换来高价值决策？",
@@ -230,6 +264,13 @@
           "contrast-band"
         ],
         "decorative_elements": []
+      },
+      "design_contract": {
+        "hierarchy": "判断标题 42px、条件节点 18px、结果动作 16px。",
+        "whitespace_intent": "分支间空白用于辨认路径和汇合关系。",
+        "alignment_contract": "起点、条件分支和结果沿纵向主轴排列。",
+        "color_emphasis": "朱红只标最终决策动作。",
+        "single_claim": "先判断任务价值和用户投入，再决定是否付费。"
       },
       "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
       "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
@@ -311,6 +352,13 @@
         ],
         "decorative_elements": []
       },
+      "design_contract": {
+        "hierarchy": "诊断标题 42px、漏斗层 20px、流失注释 14px。",
+        "whitespace_intent": "漏斗两侧留白用于突出收窄过程和最大流失点。",
+        "alignment_contract": "漏斗层共享中心线，注释沿右侧说明列对齐。",
+        "color_emphasis": "朱红只标规则不清这一最大流失点。",
+        "single_claim": "奖励规则不清是问卷流程的最大流失来源。"
+      },
       "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
       "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
     },
@@ -385,6 +433,13 @@
           "contrast-band"
         ],
         "decorative_elements": []
+      },
+      "design_contract": {
+        "hierarchy": "机制标题 42px、因果卡 19px、解释注释 14px。",
+        "whitespace_intent": "因果卡之间的空白表现方向，不增加装饰面板。",
+        "alignment_contract": "三段因果卡共享水平中线，箭头终止于卡片边界。",
+        "color_emphasis": "朱红只标信任结果。",
+        "single_claim": "确定兑现会把激励从成本转化为信任信号。"
       },
       "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
       "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
@@ -464,6 +519,13 @@
         ],
         "decorative_elements": []
       },
+      "design_contract": {
+        "hierarchy": "矩阵标题 42px、象限标签 18px、轴说明 14px。",
+        "whitespace_intent": "象限内部留白用于区分点位，不叠加说明卡。",
+        "alignment_contract": "矩阵、坐标轴和结论标注共享同一边界框。",
+        "color_emphasis": "朱红只标右上目标象限。",
+        "single_claim": "只有高投入且高决策价值的问卷值得重点付费。"
+      },
       "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
       "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
     },
@@ -541,6 +603,13 @@
         ],
         "decorative_elements": []
       },
+      "design_contract": {
+        "hierarchy": "路径标题 42px、用户动作 18px、产品机制 14px。",
+        "whitespace_intent": "双泳道之间留白用于区分用户行为和产品机制。",
+        "alignment_contract": "动作与机制按阶段逐格垂直对齐。",
+        "color_emphasis": "朱红只标用户路径中的风险点。",
+        "single_claim": "激励必须在用户动作与产品机制之间逐步对应。"
+      },
       "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
       "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
     },
@@ -562,6 +631,26 @@
       "animation": "before、after、原则条按三步出现",
       "transition": "fade",
       "speaker_notes": "PPT 导出时拆 before / after / 原则三页。",
+      "storyboard_states": [
+        {
+          "suffix": "a",
+          "label": "只显示改造前",
+          "include_steps": [0],
+          "speaker_note": "先让听众识别不确定、后置和手动申请的问题。"
+        },
+        {
+          "suffix": "b",
+          "label": "加入改造后",
+          "include_steps": [0, 1],
+          "speaker_note": "逐项对应展示改造后的写法。"
+        },
+        {
+          "suffix": "c",
+          "label": "显示改造原则",
+          "include_steps": [0, 1, 2],
+          "speaker_note": "用确定感和自动兑现收束。"
+        }
+      ],
       "render_track": "engine",
       "data": {
         "before": {
@@ -607,6 +696,13 @@
           "contrast-band"
         ],
         "decorative_elements": []
+      },
+      "design_contract": {
+        "hierarchy": "对照标题 42px、改造条目 18px、原则说明 14px。",
+        "whitespace_intent": "中间分隔区留白用于建立前后对照，不放第三列。",
+        "alignment_contract": "before 与 after 条目逐行对齐，原则固定在右下。",
+        "color_emphasis": "朱红只标改造后的核心原则。",
+        "single_claim": "把不确定抽奖改为规则前置且确定兑现。"
       },
       "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
       "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
@@ -672,6 +768,13 @@
         ],
         "decorative_elements": []
       },
+      "design_contract": {
+        "hierarchy": "行动标题 42px、三项动作 20px、执行说明 14px。",
+        "whitespace_intent": "行动行之间留白用于形成执行节奏。",
+        "alignment_contract": "三项动作共享编号列和文字起始线。",
+        "color_emphasis": "朱红只标第一优先动作。",
+        "single_claim": "下一份问卷应先前置规则、确定兑现并自动发放。"
+      },
       "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
       "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"
     },
@@ -716,6 +819,13 @@
           "oversized-type"
         ],
         "decorative_elements": []
+      },
+      "design_contract": {
+        "hierarchy": "收束句 64px、行动提示 22px、页码 13px。",
+        "whitespace_intent": "收束句周围大留白用于结束停顿和行动聚焦。",
+        "alignment_contract": "收束句与行动提示沿同一视觉轴居中。",
+        "color_emphasis": "朱红只标确定拿到。",
+        "single_claim": "把有机会改成确定拿到。"
       },
       "aesthetic_risk": "信息结构被弱化成普通文字卡片，或辅助标注过多稀释第一视觉锚点。",
       "pass_criteria": "缩略图可读，第一视觉锚点明确，主结构只有一个，证据或行动关系可见，且与前后页轮廓不同。"

@@ -44,6 +44,13 @@
         "rhythm_element": ["oversized-type"],
         "decorative_elements": []
       },
+      "design_contract": {
+        "hierarchy": "标题 48px、正文 22px、来源 13px，形成三级层级",
+        "whitespace_intent": "右上留白作为视觉停顿和主结构安全区",
+        "alignment_contract": "标题、主结构和来源行对齐同一左侧网格线",
+        "color_emphasis": "唯一强调色只标本页关键判断",
+        "single_claim": "本页唯一需要观众记住的结论"
+      },
       "aesthetic_risk": "本页最容易变丑或变空的风险",
       "pass_criteria": "通过标准：缩略图可读、视觉锚点明确、信息关系可见、与前后页轮廓不同",
       "image_prompt": "如需生图，写完整提示词；不需要则写不需要",

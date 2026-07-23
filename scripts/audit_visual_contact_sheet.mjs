@@ -1,29 +1,8 @@
 #!/usr/bin/env node
-import { createRequire } from "node:module";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-
-const require = createRequire(import.meta.url);
-
-function loadModule(name) {
-  try {
-    return require(name);
-  } catch (firstError) {
-    const extraDirs = [
-      process.env.CODEX_NODE_MODULES,
-      "/Users/linhan12312/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules",
-    ].filter(Boolean);
-    for (const dir of extraDirs) {
-      try {
-        return require(path.join(dir, name));
-      } catch {
-        // Keep trying candidate module roots.
-      }
-    }
-    throw new Error(`Cannot load ${name}. Install it or set CODEX_NODE_MODULES. ${firstError.message}`);
-  }
-}
+import { launchChromium, loadModule } from "./lib/node-runtime.mjs";
 
 let chromium;
 let sharp;
@@ -215,24 +194,12 @@ if (args.help || args.htmlFiles.length === 0) {
 }
 
 await mkdir(args.outDir, { recursive: true });
-const launchOptions = { headless: true };
-if (args.chrome) launchOptions.executablePath = args.chrome;
-else {
-  const localChrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-  const { access } = await import("node:fs/promises");
-  try {
-    await access(localChrome);
-    launchOptions.executablePath = localChrome;
-  } catch {
-    // Fall back to Playwright's bundled Chromium.
-  }
-}
 
 let browser;
 try {
   ({ chromium } = loadModule("playwright"));
   sharp = loadModule("sharp");
-  browser = await chromium.launch(launchOptions);
+  browser = await launchChromium(chromium, args.chrome);
 } catch (error) {
   const firstLine = String(error && error.message ? error.message : error).split("\n")[0];
   console.log(`[INFO] Playwright unavailable (${firstLine}); run the visual contact sheet audit manually:`);

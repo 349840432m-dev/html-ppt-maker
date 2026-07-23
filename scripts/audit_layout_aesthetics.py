@@ -29,6 +29,13 @@ STRUCTURE_OBJECTS = {
     "map",
     "architecture",
     "comparison",
+    "cycle",
+    "radial",
+    "pyramid",
+    "hierarchy",
+    "diagnostic-axis",
+    "system-map",
+    "spectrum",
 }
 SUPPORT_ELEMENTS = {
     "annotation",
@@ -54,6 +61,13 @@ RHYTHM_ELEMENTS = {
     "spotlight",
     "oversized-type",
 }
+DESIGN_CONTRACT_FIELDS = (
+    "hierarchy",
+    "whitespace_intent",
+    "alignment_contract",
+    "color_emphasis",
+    "single_claim",
+)
 
 
 def as_list(value) -> list:
@@ -86,6 +100,14 @@ def audit_slide(slide: dict, index: int, errors: list[str], warnings: list[str])
     for field in ("layout_intent", "first_visual_anchor", "aesthetic_risk", "pass_criteria"):
         if not has_text(slide.get(field)):
             fail(errors, sid, f"missing {field}; every slide needs explicit layout judgment")
+
+    design_contract = slide.get("design_contract")
+    if not isinstance(design_contract, dict):
+        fail(errors, sid, "missing design_contract object")
+    else:
+        for field in DESIGN_CONTRACT_FIELDS:
+            if not has_text(design_contract.get(field)):
+                fail(errors, sid, f"design_contract.{field} must be a concrete, non-empty statement")
 
     translation = slide.get("visual_translation")
     if not isinstance(translation, dict):

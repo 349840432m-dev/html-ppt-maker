@@ -1,0 +1,11 @@
+{
+  "name": "html-ppt-maker-runtime",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Pinned Node dependencies for html-ppt-maker validation and export.",
+  "dependencies": {
+    "playwright": "1.61.1",
+    "pptxgenjs": "4.0.1",
+    "sharp": "0.34.5"
+  }
+}

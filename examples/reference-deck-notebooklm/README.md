@@ -17,13 +17,14 @@
 ## 验证方式
 
 ```bash
-python3 ../../scripts/validate_deck_plan.py deck-plan.json
-python3 ../../scripts/audit_deck_quality.py deck-plan.json
-python3 ../../scripts/audit_layout_aesthetics.py deck-plan.json
-node ../../scripts/audit_layout_contract.mjs index.html deck-plan.json
-python3 ../../scripts/audit_style_discipline.py index.html deck-plan.json
-python3 ../../scripts/audit_motion_quality.py index.html
-node ../../scripts/audit_visual_contact_sheet.mjs --out /tmp/reference-audit index.html
+RUN=../../scripts/run_tool.sh
+"$RUN" ../../scripts/validate_deck_plan.py deck-plan.json
+"$RUN" ../../scripts/audit_deck_quality.py deck-plan.json
+"$RUN" ../../scripts/audit_layout_aesthetics.py deck-plan.json
+"$RUN" ../../scripts/audit_layout_contract.mjs index.html deck-plan.json
+"$RUN" ../../scripts/audit_style_discipline.py index.html deck-plan.json
+"$RUN" ../../scripts/audit_motion_quality.py index.html
+"$RUN" ../../scripts/audit_visual_contact_sheet.mjs --out /tmp/reference-audit index.html
 ```
 
 结构、DOM、风格和动效脚本必须 0 FAIL；contact sheet 的 warnings 必须人工复核并在交付前处理。

@@ -16,6 +16,13 @@ ADVANCED_LAYOUTS = {
     "matrix",
     "journey",
     "before-after",
+    "cycle",
+    "radial",
+    "pyramid",
+    "hierarchy",
+    "diagnostic-axis",
+    "system-map",
+    "spectrum",
 }
 LAYOUT_ALIASES = {"journey-blueprint": "journey"}
 

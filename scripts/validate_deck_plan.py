@@ -35,6 +35,8 @@ REQUIRED_SLIDE_FIELDS = [
 ENGINE_LAYOUTS = {
     "stack", "bars", "blueprint", "decision-tree", "funnel", "causal-chain",
     "matrix", "journey", "before-after", "waterfall", "gantt", "checklist",
+    "cycle", "radial", "pyramid", "hierarchy", "diagnostic-axis",
+    "system-map", "spectrum",
 }
 LAYOUT_ALIASES = {
     "journey-blueprint": "journey",
@@ -48,6 +50,7 @@ HAND_LAYOUTS = {"hero", "quote", "end", "section", "metaphor"}
 
 ERRORS: list[str] = []
 WARNINGS: list[str] = []
+STYLE_MANIFEST = Path(__file__).resolve().parent.parent / "assets" / "style-library" / "manifest.json"
 
 
 def fail(message: str) -> None:
@@ -56,6 +59,26 @@ def fail(message: str) -> None:
 
 def warn(message: str) -> None:
     WARNINGS.append(message)
+
+
+def load_style_catalog() -> dict[str, set[str]]:
+    try:
+        manifest = json.loads(STYLE_MANIFEST.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        fail(f"cannot read style manifest {STYLE_MANIFEST}: {exc}")
+        return {}
+    styles = manifest.get("styles")
+    if not isinstance(styles, list) or not styles:
+        fail(f"style manifest has no styles: {STYLE_MANIFEST}")
+        return {}
+    catalog: dict[str, set[str]] = {}
+    for item in styles:
+        if not isinstance(item, dict) or not str(item.get("id", "")).strip():
+            fail("style manifest contains a style without an id")
+            continue
+        style_id = str(item["id"]).strip()
+        catalog[style_id] = {str(value).strip() for value in item.get("signatures", []) if str(value).strip()}
+    return catalog
 
 
 def require_text(slide_id: str, field: str, value) -> None:
@@ -261,6 +284,173 @@ def check_blueprint(sid: str, data: dict) -> None:
         fail(f"{sid}: blueprint 红色纪律——priority 卡只能有一张")
 
 
+def check_cycle(sid: str, data: dict) -> None:
+    if not str(data.get("center", "")).strip():
+        fail(f"{sid}: data.center is required（循环必须说明围绕什么目标闭环）")
+    items = require_list(sid, data, "items", 3, 6, "cycle nodes")
+    if items is None:
+        return
+    for i, item in enumerate(items):
+        if not isinstance(item, dict):
+            fail(f"{sid}: data.items[{i}] must be an object")
+            continue
+        for key in ("title", "detail"):
+            if not str(item.get(key, "")).strip():
+                fail(f"{sid}: data.items[{i}].{key} is required")
+
+
+def check_radial(sid: str, data: dict) -> None:
+    if not str(data.get("center", "")).strip():
+        fail(f"{sid}: data.center is required（放射图必须有中心命题）")
+    spokes = require_list(sid, data, "spokes", 3, 6, "radial spokes")
+    if spokes is None:
+        return
+    for i, item in enumerate(spokes):
+        if not isinstance(item, dict):
+            fail(f"{sid}: data.spokes[{i}] must be an object")
+            continue
+        for key in ("title", "detail"):
+            if not str(item.get(key, "")).strip():
+                fail(f"{sid}: data.spokes[{i}].{key} is required")
+        if "hot" in item and not isinstance(item["hot"], bool):
+            fail(f"{sid}: data.spokes[{i}].hot must be boolean")
+    if sum(bool(item.get("hot")) for item in spokes if isinstance(item, dict)) > 1:
+        fail(f"{sid}: radial 红色纪律——hot 分支只能有一个")
+
+
+def check_pyramid(sid: str, data: dict) -> None:
+    layers = require_list(sid, data, "layers", 3, 5, "pyramid layers")
+    if layers is None:
+        return
+    for i, item in enumerate(layers):
+        if not isinstance(item, dict):
+            fail(f"{sid}: data.layers[{i}] must be an object")
+            continue
+        for key in ("title", "detail"):
+            if not str(item.get(key, "")).strip():
+                fail(f"{sid}: data.layers[{i}].{key} is required")
+        if "hot" in item and not isinstance(item["hot"], bool):
+            fail(f"{sid}: data.layers[{i}].hot must be boolean")
+    if sum(bool(item.get("hot")) for item in layers if isinstance(item, dict)) > 1:
+        fail(f"{sid}: pyramid 红色纪律——hot 层只能有一层")
+
+
+def check_hierarchy(sid: str, data: dict) -> None:
+    if not str(data.get("root", "")).strip():
+        fail(f"{sid}: data.root is required（层级图必须有根节点）")
+    groups = require_list(sid, data, "groups", 2, 4, "hierarchy groups")
+    if groups is None:
+        return
+    for i, group in enumerate(groups):
+        if not isinstance(group, dict):
+            fail(f"{sid}: data.groups[{i}] must be an object")
+            continue
+        if not str(group.get("title", "")).strip():
+            fail(f"{sid}: data.groups[{i}].title is required")
+        children = group.get("children")
+        if not isinstance(children, list) or not 1 <= len(children) <= 3:
+            fail(f"{sid}: data.groups[{i}].children must be a list of 1-3 labels")
+        elif any(not str(child).strip() for child in children):
+            fail(f"{sid}: data.groups[{i}].children cannot contain empty labels")
+
+
+def check_diagnostic_axis(sid: str, data: dict) -> None:
+    axes = {}
+    for key in ("x_axis", "y_axis"):
+        axis = data.get(key)
+        if not isinstance(axis, dict):
+            fail(f"{sid}: data.{key} must be an object with label/min/max")
+            continue
+        if not str(axis.get("label", "")).strip():
+            fail(f"{sid}: data.{key}.label is required")
+        if not isinstance(axis.get("min"), (int, float)) or not isinstance(axis.get("max"), (int, float)):
+            fail(f"{sid}: data.{key}.min/max must be numbers")
+        elif axis["min"] >= axis["max"]:
+            fail(f"{sid}: data.{key}.min must be smaller than max")
+        else:
+            axes[key] = axis
+    points = require_list(sid, data, "points", 3, 8, "diagnostic points")
+    if points is not None and len(axes) == 2:
+        for i, point in enumerate(points):
+            if not isinstance(point, dict) or not str(point.get("label", "")).strip():
+                fail(f"{sid}: data.points[{i}].label is required")
+                continue
+            for value_key, axis_key in (("x", "x_axis"), ("y", "y_axis")):
+                value = point.get(value_key)
+                axis = axes[axis_key]
+                safe_min = axis["min"] + (axis["max"] - axis["min"]) * .05
+                safe_max = axis["max"] - (axis["max"] - axis["min"]) * .05
+                if not isinstance(value, (int, float)) or not safe_min <= value <= safe_max:
+                    fail(f"{sid}: data.points[{i}].{value_key} must stay inside the inner 90% of {axis_key}（避免标签贴边）")
+        if sum(bool(point.get("hot")) for point in points if isinstance(point, dict)) > 1:
+            fail(f"{sid}: diagnostic-axis 红色纪律——hot 点只能有一个")
+    target = data.get("target")
+    if not isinstance(target, dict) or not str(target.get("label", "")).strip():
+        fail(f"{sid}: data.target with a label is required")
+    elif len(axes) == 2:
+        for lo_key, hi_key, axis_key in (
+            ("x_min", "x_max", "x_axis"),
+            ("y_min", "y_max", "y_axis"),
+        ):
+            lo, hi = target.get(lo_key), target.get(hi_key)
+            axis = axes[axis_key]
+            if not isinstance(lo, (int, float)) or not isinstance(hi, (int, float)):
+                fail(f"{sid}: data.target.{lo_key}/{hi_key} must be numbers")
+            elif not axis["min"] <= lo < hi <= axis["max"]:
+                fail(f"{sid}: data.target.{lo_key}/{hi_key} must form a range inside {axis_key}")
+
+
+def check_system_map(sid: str, data: dict) -> None:
+    if not str(data.get("boundary", "")).strip():
+        fail(f"{sid}: data.boundary is required（系统图必须说明边界）")
+    for key in ("inputs", "outputs"):
+        values = require_list(sid, data, key, 1, 3, key)
+        if values is not None and any(not str(value).strip() for value in values):
+            fail(f"{sid}: data.{key} cannot contain empty labels")
+    modules = require_list(sid, data, "modules", 2, 4, "system modules")
+    if modules is None:
+        return
+    for i, module in enumerate(modules):
+        if not isinstance(module, dict):
+            fail(f"{sid}: data.modules[{i}] must be an object")
+            continue
+        for key in ("title", "detail"):
+            if not str(module.get(key, "")).strip():
+                fail(f"{sid}: data.modules[{i}].{key} is required")
+        if "hot" in module and not isinstance(module["hot"], bool):
+            fail(f"{sid}: data.modules[{i}].hot must be boolean")
+    if sum(bool(module.get("hot")) for module in modules if isinstance(module, dict)) > 1:
+        fail(f"{sid}: system-map 红色纪律——hot 模块只能有一个")
+
+
+def check_spectrum(sid: str, data: dict) -> None:
+    for key in ("left_label", "right_label"):
+        if not str(data.get(key, "")).strip():
+            fail(f"{sid}: data.{key} is required（光谱两端必须有明确含义）")
+    stops = require_list(sid, data, "stops", 3, 6, "spectrum stops")
+    if stops is not None and any(not str(value).strip() for value in stops):
+        fail(f"{sid}: data.stops cannot contain empty labels")
+    marker = data.get("marker")
+    if not isinstance(marker, dict):
+        fail(f"{sid}: data.marker is required")
+    else:
+        if not str(marker.get("label", "")).strip() or not str(marker.get("detail", "")).strip():
+            fail(f"{sid}: data.marker.label/detail are required")
+        position = marker.get("position_pct")
+        if not isinstance(position, (int, float)) or not 5 <= position <= 95:
+            fail(f"{sid}: data.marker.position_pct must be 5-95（避免标记文字贴边）")
+    target = data.get("target")
+    if target is not None:
+        if not isinstance(target, dict) or not str(target.get("label", "")).strip():
+            fail(f"{sid}: data.target must be an object with label")
+        else:
+            start, end = target.get("start_pct"), target.get("end_pct")
+            if not isinstance(start, (int, float)) or not isinstance(end, (int, float)):
+                fail(f"{sid}: data.target.start_pct/end_pct must be numbers")
+            elif not 0 <= start < end <= 100:
+                fail(f"{sid}: data.target must form a range inside 0-100")
+
+
 LAYOUT_CONTRACTS = {
     "bars": check_bars,
     "funnel": check_funnel,
@@ -274,6 +464,13 @@ LAYOUT_CONTRACTS = {
     "waterfall": check_waterfall,
     "stack": check_stack,
     "blueprint": check_blueprint,
+    "cycle": check_cycle,
+    "radial": check_radial,
+    "pyramid": check_pyramid,
+    "hierarchy": check_hierarchy,
+    "diagnostic-axis": check_diagnostic_axis,
+    "system-map": check_system_map,
+    "spectrum": check_spectrum,
 }
 
 
@@ -331,18 +528,35 @@ def main() -> None:
         if field in data and (not isinstance(data[field], str) or not data[field].strip()):
             fail(f"top-level field '{field}' must be a non-empty string")
 
+    style_catalog = load_style_catalog()
+    selected_template = None
+    secondary = None
     confirmation = data.get("style_confirmation")
     if isinstance(confirmation, dict):
         for field in ("status", "selected_style", "output_mode", "ppt_strategy"):
             if not isinstance(confirmation.get(field), str) or not confirmation[field].strip():
                 fail(f"style_confirmation.{field} must be a non-empty string")
         selected_template = confirmation.get("selected_template")
-        if selected_template is None:
-            print("[WARN] style_confirmation.selected_template is missing; use a style-library template id for new decks")
-        elif not isinstance(selected_template, str) or not selected_template.strip():
-            fail("style_confirmation.selected_template must be a non-empty string when provided")
-        if confirmation.get("status") not in {"confirmed", "user-specified", "skipped"}:
-            fail("style_confirmation.status must be confirmed, user-specified, or skipped")
+        if not isinstance(selected_template, str) or not selected_template.strip():
+            fail("style_confirmation.selected_template must be a non-empty style-library template id")
+            selected_template = None
+        else:
+            selected_template = selected_template.strip()
+        if selected_template and selected_template not in style_catalog:
+            fail(
+                f"style_confirmation.selected_template '{selected_template}' is not in style-library manifest; "
+                f"expected one of {sorted(style_catalog)}"
+            )
+        secondary = confirmation.get("secondary_template")
+        if secondary is not None:
+            if isinstance(secondary, str):
+                secondary = secondary.strip()
+            if not isinstance(secondary, str) or secondary not in style_catalog:
+                fail("style_confirmation.secondary_template must be null or a style-library template id")
+            elif secondary == selected_template:
+                fail("style_confirmation.secondary_template must differ from selected_template")
+        if confirmation.get("status") not in {"confirmed", "user-specified", "skipped", "inherited"}:
+            fail("style_confirmation.status must be confirmed, user-specified, skipped, or inherited")
     elif "style_confirmation" in data:
         fail("style_confirmation must be an object")
 
@@ -352,6 +566,29 @@ def main() -> None:
             value = visual_system.get(dial)
             if not isinstance(value, (int, float)) or not 1 <= value <= 10:
                 fail(f"visual_system.{dial} must be a number from 1 to 10")
+        preset = visual_system.get("preset")
+        if preset is not None and preset not in {"notebooklm", "editorial"}:
+            fail("visual_system.preset must be 'notebooklm' or 'editorial' when provided")
+        signatures = visual_system.get("template_signatures")
+        if not isinstance(signatures, list) or len([value for value in signatures if isinstance(value, str) and value.strip()]) < 3:
+            fail("visual_system.template_signatures must contain at least 3 non-empty signatures")
+        elif selected_template in style_catalog:
+            signature_values = {str(value).strip() for value in signatures if str(value).strip()}
+            primary_signatures = signature_values & style_catalog[selected_template]
+            if len(primary_signatures) < 3:
+                fail(
+                    f"visual_system.template_signatures must include at least 3 signatures from "
+                    f"manifest style '{selected_template}'"
+                )
+            allowed_signatures = set(style_catalog[selected_template])
+            if isinstance(secondary, str) and secondary in style_catalog:
+                allowed_signatures |= style_catalog[secondary]
+            unknown = sorted(signature_values - allowed_signatures)
+            if unknown:
+                fail(
+                    f"visual_system.template_signatures must come from manifest style '{selected_template}'; "
+                    f"unknown values: {unknown}"
+                )
     elif "visual_system" in data:
         fail("visual_system must be an object")
 

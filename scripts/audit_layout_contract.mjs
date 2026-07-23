@@ -1,14 +1,8 @@
 #!/usr/bin/env node
-import { createRequire } from "node:module";
-import { access, readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-
-const require = createRequire(import.meta.url);
-const EXTRA_MODULE_DIRS = [
-  process.env.CODEX_NODE_MODULES,
-  "/Users/linhan12312/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules",
-].filter(Boolean);
+import { launchChromium, loadModule } from "./lib/node-runtime.mjs";
 const LAYOUT_ALIASES = new Map([
   ["journey-blueprint", "journey"],
   ["section-impact", "section"],
@@ -16,21 +10,6 @@ const LAYOUT_ALIASES = new Map([
   ["process-map", "process"],
   ["case-walkthrough", "case"],
 ]);
-
-function loadModule(name) {
-  try {
-    return require(name);
-  } catch (firstError) {
-    for (const dir of EXTRA_MODULE_DIRS) {
-      try {
-        return require(path.join(dir, name));
-      } catch {
-        // Try the next configured runtime.
-      }
-    }
-    throw new Error(`Cannot load ${name}. Install it or set CODEX_NODE_MODULES. ${firstError.message}`);
-  }
-}
 
 function normalizeLayout(value) {
   const key = String(value || "").trim().toLowerCase();
@@ -48,19 +27,6 @@ function parseArgs(argv) {
   }
   [args.html, args.plan] = positional;
   return args;
-}
-
-async function launch(chromium, chrome) {
-  const candidates = [chrome, "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"].filter(Boolean);
-  for (const executablePath of candidates) {
-    try {
-      await access(executablePath);
-      return await chromium.launch({ headless: true, executablePath });
-    } catch {
-      // Try the next browser candidate.
-    }
-  }
-  return chromium.launch({ headless: true });
 }
 
 function nonEmptyList(value) {
@@ -82,21 +48,24 @@ try {
   if (!specs.length) throw new Error("deck plan has no slides");
 
   const { chromium } = loadModule("playwright");
-  const browser = await launch(chromium, args.chrome);
-  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
-  await page.goto(pathToFileURL(htmlPath).href, { waitUntil: "load" });
-  await page.waitForSelector(".slide", { timeout: 10000 });
-  await page.evaluate(() => {
-    const style = document.createElement("style");
-    style.textContent = "*,*::before,*::after{animation:none!important;transition:none!important}";
-    document.head.appendChild(style);
-    document.querySelectorAll(".slide").forEach((slide) => {
-      slide.classList.add("active");
-      slide.querySelectorAll("[data-reveal],[data-step]").forEach((node) => node.classList.add("revealed"));
+  const browser = await launchChromium(chromium, args.chrome);
+  let page;
+  let actual;
+  try {
+    page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+    await page.goto(pathToFileURL(htmlPath).href, { waitUntil: "load" });
+    await page.waitForSelector(".slide", { timeout: 10000 });
+    await page.evaluate(() => {
+      const style = document.createElement("style");
+      style.textContent = "*,*::before,*::after{animation:none!important;transition:none!important}";
+      document.head.appendChild(style);
+      document.querySelectorAll(".slide").forEach((slide) => {
+        slide.classList.add("active");
+        slide.querySelectorAll("[data-reveal],[data-step]").forEach((node) => node.classList.add("revealed"));
+      });
     });
-  });
-  await page.waitForTimeout(80);
-  const actual = await page.evaluate(() => {
+    await page.waitForTimeout(80);
+    actual = await page.evaluate(() => {
     const visible = (node) => {
       const style = getComputedStyle(node);
       const rect = node.getBoundingClientRect();
@@ -118,8 +87,11 @@ try {
         rhythm: role("rhythm"),
       };
     });
-  });
-  await browser.close();
+    });
+  } finally {
+    if (page) await page.close();
+    await browser.close();
+  }
 
   const failures = [];
   const warnings = [];
