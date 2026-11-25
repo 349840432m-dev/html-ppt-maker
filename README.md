@@ -252,3 +252,7 @@ html-ppt-maker/
 - 留白必须有目的，空容器不等于留白。
 - 自动脚本负责硬错误，contact sheet 与人工审稿负责整体气质。
 - HTML 是视觉真相源，PPTX 是交付层。
+
+## 作者网站
+
+[DailyCited](https://dailycited.com/) · [ShortDramaWords](https://shortdramawords.com/)
